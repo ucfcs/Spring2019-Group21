@@ -8,5 +8,7 @@
 
 ###  Team Members
 [Brian Wengier](https://github.com/BrianWengier)
+
 [Randy Tsui](https://github.com/RandyT97)
+
 [Jordan Rowland](https://github.com/rowlanddeep)
