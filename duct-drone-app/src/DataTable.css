@@ -1,0 +1,8 @@
+@media only screen and (max-device-width : 812px) {
+	.Table {
+		font-size: 40px;
+/*		left:50px;*/
+		bottom: 90px;
+		position: fixed;
+	}
+}
