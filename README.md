@@ -2,9 +2,8 @@
 # Spring2019-Group21
 ### Spider Robot Duct Inspection Blue Team Senior Design I
 ### Technology Stack
-1. Django v2.1.7
-2. Python v3.7.2
-3. Bootstrap v4.3.1
+1. React v16.8.5
+2. Node v10.15.3
 
 ###  Team Members
 [Brian Wengier](https://github.com/BrianWengier)
