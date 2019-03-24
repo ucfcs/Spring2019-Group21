@@ -1,0 +1,14 @@
+/duct-drone-app/node_modules
+/duct-drone-app/test/js
+/duct-drone-app/test/browsertest/js
+/duct-drone-app/test/fixtures/temp-cache-fixture
+/duct-drone-app/benchmark/js
+/benchmark/fixtures
+/duct-drone-app/examples/**/dist
+/duct-drone-app/coverage
+/duct-drone-app/.DS_Store
+/duct-drone-app/*.log
+/duct-drone-app/.idea
+/duct-drone-app/.vscode
+/duct-drone-app/.eslintcache
+/duct-drone-app/package-lock.json
