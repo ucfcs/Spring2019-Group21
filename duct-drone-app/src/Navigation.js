@@ -18,27 +18,6 @@ class Navigation extends React.Component {
           <Nav.Link eventKey="link-3">View Map</Nav.Link>
         </Nav.Item>
       </Nav>
-          /*
-      <Navbar collapseOnSelect expand="md" bg="dark" variant="dark" fixed="bottom">
-      
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="mr-auto" variant="pills">
-          <Nav.Item>
-            <Nav.Link href="#features">Control</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#features">Data</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#features">Log</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link href="#features">Features</Nav.Link>
-          </Nav.Item>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>*/
 )
   }
 }

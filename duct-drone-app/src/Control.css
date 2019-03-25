@@ -1,0 +1,10 @@
+.ReactNipple {
+	width: 100%;
+	height: 25%;
+    position: 'relative';
+}
+@media only screen and (max-device-width : 812px) {
+	.ReactNipple {
+	}
+
+}
