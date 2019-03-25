@@ -1,0 +1,9 @@
+/*.container {
+	font-size: 100px;
+} */
+#feed {
+	font-size:100px;
+	height:70%;
+	width:100%;
+	border-style: solid;
+}

@@ -4,7 +4,7 @@ import './DataTable.css'
 class DataTable extends React.Component {
 	render() {
 		return (
-			<Table responsive>
+			<Table responsive bordered="true"  striped bordered size="md">
 			  <thead>
 			    <tr>
 			      <th>#</th>
