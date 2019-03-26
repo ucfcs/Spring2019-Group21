@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import './DataTable.css'
 class DataTable extends React.Component {
 	render() {
+		var isActive = false;
 		return (
 			<Table responsive bordered="true"  striped bordered size="md">
 			  <thead>

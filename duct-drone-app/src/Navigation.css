@@ -2,7 +2,10 @@
 	.navbar-brand {
 		font-size: 50px;
 	}
-	.nav-link {
+	.nav-item {
+		font-size: 40px;
+	}
+	.link {
 		font-size: 40px;
 	}
 }

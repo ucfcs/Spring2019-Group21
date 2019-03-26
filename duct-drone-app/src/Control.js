@@ -4,7 +4,14 @@ import ReactNipple from 'react-nipple';
 import './Control.css';
 // optional: include the stylesheet somewhere in your app
 class Control extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
+    }
 	render() {
+        var isActive = true;
         return (
             <div>
                 <ReactNipple

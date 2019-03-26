@@ -1,9 +1,13 @@
 @media only screen and (max-device-width : 812px) {
 	.table {
 		font-size: 40px;
-		height: 25%;
+		
 /*		left:50px;
 		bottom: 0px;
 		position: relative;*/
 	}
+}
+.table {
+	position: relative;
+	height:25%;
 }

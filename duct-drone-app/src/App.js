@@ -5,20 +5,27 @@ import Container from 'react-bootstrap/Container';
 import Control from './Control';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import './App.css';
 class App extends Component {
+
 	render() {
 		return(
+			<Router>
 				<Container>
 					<Row>
 						<Col><div id="feed"></div></Col>
 					</Row>
-					<Row>
-						<Col><Control/></Col>
-					</Row>
-				<Navigation />
+			        <Row>
+			          <Col>
+			          	<Route path="/" exact component={Control}/>
+						<Route path="/data/" component={DataTable}/>
+					  </Col>
+			        </Row>
+<Navigation/>
 				</Container>
-				
+			</Router>
 		);
 	}
 }
