@@ -10,10 +10,10 @@ class Navigation extends React.Component {
     return (
       <Nav fill variant="pills" defaultActiveKey="1" onSelect={k => this.handleSelect(k)} fixed='bottom'>
         <Nav.Item>
-            <Link to="/">Control</Link>
+            <Link to="/app/control/">Control</Link>
         </Nav.Item>
         <Nav.Item>
-            <Link to="/data/">Data</Link>
+            <Link to="/app/data/">Data</Link>
         </Nav.Item> 
         <Nav.Item>
           Logs
