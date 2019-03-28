@@ -1,0 +1,14 @@
+.container {
+	position: relative;
+} 
+#feed {
+	border-width: 2px;
+	height:70%;
+	width:100%;
+	border-style: solid;
+	color:#007bff;
+    border-radius: 20px;
+}
+.BottomGrid {
+	bottom: 0;
+}

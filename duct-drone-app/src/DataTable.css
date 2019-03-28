@@ -1,0 +1,10 @@
+@media only screen and (max-device-width : 812px) {
+	.table {
+		font-size: 40px;
+		
+	}
+}
+.table {
+	position: relative;
+	height:25%;
+}
