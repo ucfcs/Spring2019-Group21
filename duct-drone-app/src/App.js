@@ -9,6 +9,8 @@ import Col from 'react-bootstrap/Col';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import './App.css';
+
+
 class App extends Component {
 	render() {
 		const InApp = () => 
