@@ -1,13 +1,16 @@
-
+var path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-
+var BUILD_DIR = path.resolve(__dirname, './build');
 const htmlPlugin = new HtmlWebPackPlugin({
   template: "./src/index.html",
   filename: "./index.html"
 });
 
 module.exports = {
-  // entry: "./src/app.js",
+  output: {
+    filename: 'bundle.js',
+    path: BUILD_DIR
+  },
   module: {
     rules: [
       {
