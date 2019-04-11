@@ -17,7 +17,7 @@ class Control extends React.Component {
                 <ReactNipple
                     // supports all nipplejs options
                     // see https://github.com/yoannmoinet/nipplejs#options
-                    options={{ size: 200, mode: 'static',color: 'blue', position: { top: '50%', left: '50%' } }}
+                    options={{ size: 150, mode: 'static',color: 'blue', position: { top: '50%', left: '50%' } }}
                     // any unknown props will be passed to the container element, e.g. 'title', 'style' etc
                     // all events supported by nipplejs are available as callbacks
                     // see https://github.com/yoannmoinet/nipplejs#start

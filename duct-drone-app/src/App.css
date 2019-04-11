@@ -1,10 +1,17 @@
 .container {
 	position: relative;
 } 
+.Sidebar {
+	margin-top:150px;
+	margin-left: -40px;
+	margin-right: -50px;
+}
 #feed {
+
 	border-width: 2px;
 	height:70%;
 	width:100%;
+	margin-top: 10px;
 	border-style: solid;
 	color:#007bff;
     border-radius: 20px;
