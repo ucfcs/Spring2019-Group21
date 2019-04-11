@@ -23,7 +23,7 @@ class Login extends Component {
 		  <Button variant="primary" type="submit">
 		    Submit
 		  </Button>
-		  <Link to="/app/">Login</Link>
+		  <Link to="/app/">proceed to next page</Link>
 		</Form>
 		)
 	}
