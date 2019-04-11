@@ -7,15 +7,16 @@ import Login from './Login';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Sidebar from './Sidebar';
-import { BrowserRouter as Router, Route, Link, Switch, IndexRedirect} from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Link, Switch, IndexRedirect} from "react-router-dom";
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import './App.css';
 
 
 class App extends Component {
 	render() {
-		const InApp = () => 
-				<Container>
+		return(
+			<Router>
+					<Container>
 					<Row>
 						<Col><div className="Sidebar"><Sidebar/></div></Col>
 						<Col xs={10}><div id="feed"></div></Col>
@@ -29,17 +30,11 @@ class App extends Component {
 										<Route path="/app/data/" component={DataTable}/>
 										<Route path="/app/logs/" component={DataTable}/>
 									</Switch>
-					  </Col>
-					  <Col></Col>
+					  		</Col>
+					  		<Col></Col>
 			        </Row>
 					<Navigation/>
 				</Container>
-		return(
-
-			<Router>
-				<Switch>
-					<Route path="/" component={InApp}/>
-				</Switch>
 			</Router>
 		);
 	}
