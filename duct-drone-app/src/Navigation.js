@@ -16,7 +16,7 @@ class Navigation extends React.Component {
             <Link to="/app/data/">Data</Link>
         </Nav.Item> 
         <Nav.Item>
-          Logs
+            <Link to="/app/logs/">Logs</Link>
         </Nav.Item>
         <Nav.Item>
           View Map

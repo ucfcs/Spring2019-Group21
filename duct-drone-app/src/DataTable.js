@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
 import './DataTable.css'
 class DataTable extends React.Component {
+	// constructor(props) {
+
+	// }
 	render() {
 		var isActive = false;
 		return (
-			<Table responsive bordered="true"  striped bordered size="md">
+			<Table responsive bordered="true"  striped bordered size="sm">
 			  <thead>
 			    <tr>
 			      <th>#</th>
