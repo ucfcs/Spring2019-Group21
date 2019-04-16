@@ -1,39 +1,31 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
 import './DataTable.css'
+import BootstrapTable from 'react-bootstrap-table-next';
 class DataTable extends React.Component {
-	// constructor(props) {
-
-	// }
+	constructor(props) {
+		super(props);
+		console.log(props.columns);
+	}
 	render() {
-		var isActive = false;
+		// const columns = [{
+		//   dataField: 'id',
+		//   text: 'Product ID'
+		// }, {
+		//   dataField: 'name',
+		//   text: 'Product Name'
+		// }, {
+		//   dataField: 'price',
+		//   text: 'Product Price'
+		// }];
+		const products = [{
+			id: 23,
+			name: "cheese",
+			price: 23.23
+
+		}];
 		return (
-			<Table responsive bordered="true"  striped bordered size="sm">
-			  <thead>
-			    <tr>
-			      <th>#</th>
-			      <th>Table heading</th>
-			      <th>Table heading</th>
-			    </tr>
-			  </thead>
-			  <tbody>
-			    <tr>
-			      <td>1</td>
-			      <td>Table cell</td>
-			      <td>Table cell</td>
-			    </tr>
-			    <tr>
-			      <td>2</td>
-			      <td>Table cell</td>
-			      <td>Table cell</td>
-			    </tr>
-			    <tr>
-			      <td>3</td>
-			      <td>Table cell</td>
-			      <td>Table cell</td>
-			    </tr>
-			  </tbody>
-			</Table>
+			<BootstrapTable keyField='id' data={ products } columns={ this.props.columns } />
 		);
 	}
 }
