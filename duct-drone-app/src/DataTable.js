@@ -20,7 +20,7 @@ class DataTable extends React.Component {
 		// }];
 		const products = [{
 			id: 23,
-			name: "cheese",
+			name: "cheesewow",
 			price: 23.23
 
 		}];

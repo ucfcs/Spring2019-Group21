@@ -3,13 +3,10 @@
 } 
 .Sidebar {
 	margin-top:150px;
-	margin-left: -40px;
-	margin-right: -50px;
 }
 #feed {
-
 	border-width: 2px;
-	height:70%;
+	height:500px;
 	width:100%;
 	margin-top: 10px;
 	border-style: solid;
@@ -18,4 +15,9 @@
 }
 .BottomGrid {
 	bottom: 0;
+}
+.swap-area {
+  width: 100%;
+  height: 300px;
+  text-align: center;
 }
