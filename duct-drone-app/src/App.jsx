@@ -17,6 +17,19 @@ import './App.css';
 
 /* eslint-disable react/prefer-stateless-function */
 class App extends Component {
+  constructor(props){
+    super(props);
+    this.escFunction = this.escFunction.bind(this);
+  }
+  escFunction = (event) => {
+    console.log(event.key);
+  }
+  componentDidMount(){
+    document.addEventListener("keydown", this.escFunction, false);
+  }
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.escFunction, false);
+  }
   render() {
     const currentDataCols = [
       {
@@ -90,27 +103,28 @@ class App extends Component {
       },
     ];
     return (
-      <Router>
-        <Container>
-          <Row style={{ height: '100%', width: '100%', border: 'black' }}>
-            <Col><div className="Sidebar"><Sidebar /></div></Col>
-            <Col xs={9}>
-              <div id="feed" />
-              <div id="action-bar">
-                <Switch>
-                  <Route path="/" exact component={Control} />
-                  <Route path="/data/" component={() => <DataTable columns={currentDataCols} data={currentData} />} />
-                  <Route path="/logs/" component={() => <DataTable columns={logCols} data={logData} />} />
-                </Switch>
-                <Navigation />
-              </div>
+      <div onKeyPress={(e) => console.log(e.key)}>
+        <Router>
+          <Container>
+            <Row style={{ height: '100%', width: '100%', border: 'black' }}>
+              <Col><div className="Sidebar"><Sidebar /></div></Col>
+              <Col xs={9}>
+                <div id="feed" />
+                <div id="action-bar">
+                  <Switch>
+                    <Route path="/" exact component={Control} />
+                    <Route path="/data/" component={() => <DataTable columns={currentDataCols} data={currentData} />} />
+                    <Route path="/logs/" component={() => <DataTable columns={logCols} data={logData} />} />
+                  </Switch>
+                  <Navigation />
+                </div>
+              </Col>
+              <Col />
+            </Row>
+          </Container>
+        </Router>
+      </div>
 
-            </Col>
-            <Col />
-          </Row>
-
-        </Container>
-      </Router>
     );
   }
 }
