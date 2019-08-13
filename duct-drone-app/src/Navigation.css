@@ -1,4 +1,4 @@
-@media only screen and (max-device-width : 812px) {
+/* @media only screen and (max-device-width : 812px) {
 	.navbar-brand {
 		font-size: 50px;
 	}
@@ -8,4 +8,10 @@
 	.link {
 		font-size: 40px;
 	}
+} */
+/* b {
+	color: hsla(0,0%,100%,.5);
 }
+.active {
+	color: white;
+} */

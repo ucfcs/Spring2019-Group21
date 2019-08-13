@@ -9,11 +9,15 @@ class DataTable extends Component {
     const { data, columns } = this.props;
     return (
       <ReactTable
+        className="-striped"
         data={data}
         columns={columns}
-        defaultPageSize={data.length}
+        defaultPageSize={15}
         showPaginationBottom={false}
         showPageSizeOptions={false}
+        style={{
+          height: '400px',
+        }}
       />
     );
   }

@@ -6,7 +6,7 @@ import {
   BrowserRouter as Router, Redirect, Route, Link, Switch, IndexRedirect,
 } from 'react-router-dom';
 import {
-  Navbar, Nav, NavItem, NavDropdown, MenuItem,
+  Navbar,
 } from 'react-bootstrap';
 import Navigation from './Navigation';
 import DataTable from './DataTable';
@@ -18,21 +18,77 @@ import './App.css';
 /* eslint-disable react/prefer-stateless-function */
 class App extends Component {
   render() {
-    const columns = [
+    const currentDataCols = [
       {
-        Header: 'Data Header 1',
-        accessor: 'dataheader1',
+        Header: 'Temperature',
+        accessor: 'currentTemp',
       },
       {
-        Header: 'Data Header 2',
-        accessor: 'dataheader2',
+        Header: 'Air Velocity',
+        accessor: 'currentAirVelocity',
       },
     ];
-    const data = [{
+    const currentData = [{
       id: 23,
-      dataheader1: 'yee',
-      dataheader2: '23.23',
+      currentTemp: '90 F',
+      currentAirVelocity: '30 m/s',
     }];
+    const logCols = [
+      {
+        Header: 'Date',
+        accessor: 'date',
+      },
+      {
+        Header: 'Time',
+        accessor: 'time',
+      },
+      {
+        Header: 'Temperature',
+        accessor: 'logTemp',
+      },
+      {
+        Header: 'Air Velocity',
+        accessor: 'airVelocity',
+      },
+      {
+        Header: 'Location',
+        accessor: 'location',
+      },
+      {
+        Header: 'Battery',
+        accessor: 'batteryLevel',
+      },
+
+    ];
+    const logData = [
+      {
+        id: 3535,
+        date: '8/13/19',
+        time: '3:00 PM',
+        logTemp: '93 F',
+        airVelocity: '30 m/s',
+        location: '90 N 35 E',
+        batteryLevel: '30%',
+      },
+      {
+        id: 3535,
+        date: '8/13/19',
+        time: '3:00 PM',
+        logTemp: '93 F',
+        airVelocity: '30 m/s',
+        location: '90 N 35 E',
+        batteryLevel: '30%',
+      },
+      {
+        id: 3535,
+        date: '8/13/19',
+        time: '3:00 PM',
+        logTemp: '93 F',
+        airVelocity: '30 m/s',
+        location: '90 N 35 E',
+        batteryLevel: '30%',
+      },
+    ];
     return (
       <Router>
         <Container>
@@ -43,11 +99,12 @@ class App extends Component {
               <div id="action-bar">
                 <Switch>
                   <Route path="/" exact component={Control} />
-                  <Route path="/data/" component={() => <DataTable columns={columns} data={data} />} />
-                  <Route path="/logs/" component={() => <DataTable columns={columns} data={data} />} />
+                  <Route path="/data/" component={() => <DataTable columns={currentDataCols} data={currentData} />} />
+                  <Route path="/logs/" component={() => <DataTable columns={logCols} data={logData} />} />
                 </Switch>
+                <Navigation />
               </div>
-              <Navigation />
+
             </Col>
             <Col />
           </Row>
