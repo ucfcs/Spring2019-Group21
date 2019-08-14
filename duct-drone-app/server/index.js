@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-
+const bodyParser = require('body-parser');
 const entryRoute = require('./routes/entry');
 const mapRoute = require('./routes/map');
 
@@ -10,6 +10,9 @@ const server = '127.0.0.1:27017'; // DB SERVER
 const database = 'test'; // DB NAME
 const port = process.env.PORT || 5000;
 
+
+const bodyParserJSON = bodyParser.json();
+const bodyParserURLEncoded = bodyParser.urlencoded({ extended: true });
 // respond with "hello world" when a GET request is made to the homepage
 app.use(express.static(path.join(__dirname, '../build')));
 
@@ -24,6 +27,8 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const router = express.Router();
+app.use(bodyParserJSON);
+app.use(bodyParserURLEncoded);
 app.use('/api', router);
 entryRoute(router);
 mapRoute(router);
