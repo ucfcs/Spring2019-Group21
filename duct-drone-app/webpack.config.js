@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 
-const BUILD_DIR = path.resolve(__dirname, './bu-ild');
+const BUILD_DIR = path.resolve(__dirname, './build');
 const htmlPlugin = new HtmlWebPackPlugin({
   template: './src/index.html',
   filename: './index.html',
