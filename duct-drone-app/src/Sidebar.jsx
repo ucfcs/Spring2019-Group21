@@ -28,9 +28,9 @@ class Sidebar extends Component {
     // console.log(props);
     return (
       <ToggleButtonGroup vertical type="checkbox" onChange={this.onChange} value={[ autonomous, mapping, logging ]}>
-        <ToggleButton variant={"outline-primary " + (autonomous ? 'active' : null )} size="sm" value="autonomous">Autonomous</ToggleButton>
-        <ToggleButton variant={"outline-primary "  + (mapping ? 'active' : null )} size="sm" value="mapping">Mapping</ToggleButton>
-        <ToggleButton variant={"outline-primary " + (logging ? 'active' : null )}  size="sm" value="logging">Logging</ToggleButton>
+        <ToggleButton variant={"outline-primary " + (autonomous ? 'active' : null )} size="lg" value="autonomous">Autonomous</ToggleButton>
+        <ToggleButton variant={"outline-primary "  + (mapping ? 'active' : null )} size="lg" value="mapping">Mapping</ToggleButton>
+        <ToggleButton variant={"outline-primary " + (logging ? 'active' : null )}  size="lg" value="logging">Logging</ToggleButton>
       </ToggleButtonGroup>
     );
   }

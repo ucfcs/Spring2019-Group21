@@ -108,7 +108,7 @@ class App extends Component {
           <Container>
             <Row style={{ height: '100%', width: '100%', border: 'black' }}>
               <Col><div className="Sidebar"><Sidebar /></div></Col>
-              <Col xs={9}>
+              <Col xs={8}>
                 <div id="feed" />
                 <div id="action-bar">
                   <Switch>
