@@ -1,7 +1,27 @@
-const map = require('../daos/mapdao');
+const Map = require('../daos/mapdao');
+
+exports.createMap = function (req, res, next) {
+  console.log(req.body);
+  const map = {
+    name: req.body.name,
+    map_link: req.body.map_link,
+    date: req.body.date,
+    sensorData: req.body.sensorData,
+  };
+  Map.create(map, (err, map) => {
+    if (err) {
+      res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: 'Map created successfully',
+    });
+  });
+};
 
 exports.getMaps = function (req, res, next) {
-  map.get({}, (err, map) => {
+  Map.get({}, (err, map) => {
     if (err) {
       res.json({
         error: err,
