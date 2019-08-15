@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const entryRoute = require('./routes/entry');
 const mapRoute = require('./routes/map');
 
@@ -13,7 +14,8 @@ const port = process.env.PORT || 5000;
 
 const bodyParserJSON = bodyParser.json();
 const bodyParserURLEncoded = bodyParser.urlencoded({ extended: true });
-// respond with "hello world" when a GET request is made to the homepage
+
+app.use(cors());
 app.use(express.static(path.join(__dirname, '../build')));
 
 // create a GET route

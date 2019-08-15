@@ -19,90 +19,103 @@ import './App.css';
 class App extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      logData: [],
+    };
     this.keyRecord = this.keyRecord.bind(this);
   }
   keyRecord = (event) => {
-    console.log(event.key);
+    // console.log(event.key);
   }
   componentDidMount(){
     document.addEventListener("keydown", this.keyRecord, false);
+    fetch('http://localhost:5000/api/get/maps',
+    {
+      method: 'GET',
+    })
+    .then(response => response.json())
+    .then(data => {
+      this.setState({logData: data});
+    });
   }
   componentWillUnmount(){
     document.removeEventListener("keydown", this.keyRecord, false);
   }
   render() {
-    const currentDataCols = [
-      {
-        Header: 'Temperature',
-        accessor: 'currentTemp',
-      },
-      {
-        Header: 'Air Velocity',
-        accessor: 'currentAirVelocity',
-      },
-    ];
-    const currentData = [{
-      id: 23,
-      currentTemp: '90 F',
-      currentAirVelocity: '30 m/s',
-    }];
+    Number.prototype.pad = function(size) {
+      var s = String(this);
+      while (s.length < (size || 2)) {s = "0" + s;}
+      return s;
+    }
+    const { logData } = this.state;
     const logCols = [
-      {
-        Header: 'Date',
-        accessor: 'date',
-      },
       {
         Header: 'Time',
         accessor: 'time',
+        Cell: row=> {
+          const date = new Date(row.row.time);
+          return(
+            <div>
+              <span>{date.getHours().pad(2)}:{date.getMinutes().pad(2)}</span>
+            </div>
+          );
+          
+        }
       },
       {
         Header: 'Temperature',
-        accessor: 'logTemp',
+        accessor: 'temperature.$numberDecimal',
       },
       {
         Header: 'Air Velocity',
-        accessor: 'airVelocity',
+        accessor: 'air_velocity.$numberDecimal',
       },
       {
-        Header: 'Location',
-        accessor: 'location',
+        Header: 'X',
+        accessor: 'coordinateX',
+        Cell: row => {
+          return(
+            <div>
+              <span>{row.row._original.coordinates.x}</span>
+            </div>
+          );
+        }
       },
-      {
-        Header: 'Battery',
-        accessor: 'batteryLevel',
-      },
-
+        {
+          Header: 'Y',
+          accessor: 'coordinateY',
+          Cell: row => {
+            return(
+              <div>
+                <span>{row.row._original.coordinates.y}</span>
+              </div>
+            );
+          },
+        },
+          {
+            Header: 'Z',
+            accessor: 'coordinateZ',
+            Cell: row => {
+              return(
+                <div>
+                  <span>{row.row._original.coordinates.z}</span>
+                </div>
+              );
+            }
+          }
     ];
-    const logData = [
+    const currentCols = [
       {
-        id: 3535,
-        date: '8/13/19',
-        time: '3:00 PM',
-        logTemp: '93 F',
-        airVelocity: '30 m/s',
-        location: '90 N 35 E',
-        batteryLevel: '30%',
+        Header: 'Temperature',
+        accessor: 'temperature',
       },
       {
-        id: 3535,
-        date: '8/13/19',
-        time: '3:00 PM',
-        logTemp: '93 F',
-        airVelocity: '30 m/s',
-        location: '90 N 35 E',
-        batteryLevel: '30%',
-      },
-      {
-        id: 3535,
-        date: '8/13/19',
-        time: '3:00 PM',
-        logTemp: '93 F',
-        airVelocity: '30 m/s',
-        location: '90 N 35 E',
-        batteryLevel: '30%',
-      },
-    ];
+        Header: 'Air Velocity',
+        accessor: 'air_velocity',
+      }
+    ]
     return (
+      
       <div onKeyPress={(e) => console.log(e.key)}>
         <Router>
           <Container>
@@ -112,9 +125,13 @@ class App extends Component {
                 <div id="feed" />
                 <div id="action-bar">
                   <Switch>
-                    <Route path="/" exact component={Control} />
-                    <Route path="/data/" component={() => <DataTable columns={currentDataCols} data={currentData} />} />
-                    <Route path="/logs/" component={() => <DataTable columns={logCols} data={logData} />} />
+                  <Route path="/" exact component={Control} />
+                  <Route path="/logs/" render={() => 
+                      <DataTable columns={logCols} data={logData.length != 0 ? logData[0].sensorData : [] } pageSize={15} />
+                    } />
+                  <Route path="/data/" render={() => 
+                    <DataTable columns={logCols} data={[]}/>
+                  } />
                   </Switch>
                   <Navigation />
                 </div>
