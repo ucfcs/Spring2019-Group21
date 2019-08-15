@@ -19,16 +19,16 @@ import './App.css';
 class App extends Component {
   constructor(props){
     super(props);
-    this.escFunction = this.escFunction.bind(this);
+    this.keyRecord = this.keyRecord.bind(this);
   }
-  escFunction = (event) => {
+  keyRecord = (event) => {
     console.log(event.key);
   }
   componentDidMount(){
-    document.addEventListener("keydown", this.escFunction, false);
+    document.addEventListener("keydown", this.keyRecord, false);
   }
   componentWillUnmount(){
-    document.removeEventListener("keydown", this.escFunction, false);
+    document.removeEventListener("keydown", this.keyRecord, false);
   }
   render() {
     const currentDataCols = [
