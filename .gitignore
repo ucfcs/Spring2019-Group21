@@ -12,6 +12,7 @@
 /duct-drone-app/.vscode
 /duct-drone-app/.eslintcache
 /duct-drone-app/package-lock.json
+/duct-drone-app/server/mocks.json
 /Documents/*
 /duct-drone-app/.vs/
 duct-drone-app/src/.vs/

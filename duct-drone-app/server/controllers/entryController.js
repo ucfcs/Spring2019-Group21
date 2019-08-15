@@ -1,7 +1,6 @@
 const Entry = require('../daos/entrydao');
 
 exports.createEntry = function (req, res, next) {
-  console.log(req.body);
   const entry = {
     time: req.body.time,
     temperature: req.body.temperature,
