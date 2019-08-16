@@ -118,12 +118,11 @@ class App extends Component {
       
       <div onKeyPress={(e) => console.log(e.key)}>
         <Router>
-          <Container>
-            <Row style={{ height: '100%', width: '100%', border: 'black' }}>
-              <Col><div className="Sidebar"><Sidebar /></div></Col>
-              <Col xs={8}>
+          <Container fluid={true}>
+            <Row style={{ height: '100%', width: '100%' }}>
+              <Col><div><Sidebar /></div></Col>
+              <Col xs={10}>
                 <div id="feed" />
-                <div id="action-bar">
                   <Switch>
                   <Route path="/" exact component={Control} />
                   <Route path="/logs/" render={() => 
@@ -134,7 +133,6 @@ class App extends Component {
                   } />
                   </Switch>
                   <Navigation />
-                </div>
               </Col>
               <Col />
             </Row>
