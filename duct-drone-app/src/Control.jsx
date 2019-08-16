@@ -16,7 +16,7 @@ class Control extends React.Component {
   render() {
     const isActive = true;
     return (
-      <div id="analog-wrapper">
+      <>
         <ReactNipple
                     // supports all nipplejs options
                     // see https://github.com/yoannmoinet/nipplejs#options
@@ -28,7 +28,8 @@ class Control extends React.Component {
                     // see https://github.com/yoannmoinet/nipplejs#start
           onMove={(evt, data) => console.log(evt, data)}
         />
-      </div>
+      </>
+
     );
   }
 }
