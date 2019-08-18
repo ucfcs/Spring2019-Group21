@@ -4,7 +4,7 @@ module.exports = {
     es6: true,
   },
   extends: [
-    'airbnb',
+    'amex',
   ],
   globals: {
     Atomics: 'readonly',

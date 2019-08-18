@@ -1,0 +1,13 @@
+.circleBase {
+  border-radius: 50%;
+  font-size: 50px;
+  text-align: center;
+  line-height: 280%;
+}
+.type1 {
+  width: 150px;
+  height: 150px;
+  border: #007bff;
+  border-style: solid;
+  border-width: 3px;
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactNipple from 'react-nipple';
 import 'react-nipple/lib/styles.css';
-import './Control.css';
+import './styles/Control.css';
 
 // optional: include the stylesheet somewhere in your app
 class Control extends React.Component {
