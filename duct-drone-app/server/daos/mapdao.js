@@ -10,6 +10,9 @@ mapSchema.statics = {
   get(query, cb) {
     this.find(query, cb);
   },
+  delete(query, cb) {
+    this.findOneAndDelette(query, cb);
+  },
 };
 
 const mapModel = mongoose.model('Map', mapSchema);
