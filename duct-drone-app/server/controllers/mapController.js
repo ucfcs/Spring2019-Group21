@@ -32,3 +32,16 @@ exports.getMaps = function (req, res, next) {
     });
   });
 };
+
+exports.removeMap = function (req, res, next) {
+  Map.deleteMany({ _id: req.params.id }, (err, hero) => {
+    if (err) {
+      res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: 'Map deleted successfully',
+    });
+  });
+};
