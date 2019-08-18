@@ -1,7 +1,6 @@
 const Map = require('../daos/mapdao');
 
 exports.createMap = function (req, res, next) {
-  console.log(req.body);
   const map = {
     name: req.body.name,
     map_link: req.body.map_link,
@@ -20,6 +19,29 @@ exports.createMap = function (req, res, next) {
   });
 };
 
+exports.createMaps = function (req, res, next) {
+  const array = [];
+  req.body.forEach((map) => {
+    array.push(
+      {
+        name: map.name,
+        map_link: map.map_link,
+        date: map.date,
+        sensorData: map.sensorData,
+      }
+    );
+  });
+  Map.insertMany(array, (err, map) => {
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: 'Maps created successfully',
+    });
+  });
+};
 exports.getMaps = function (req, res, next) {
   Map.get({}, (err, map) => {
     if (err) {
@@ -34,14 +56,26 @@ exports.getMaps = function (req, res, next) {
 };
 
 exports.removeMap = function (req, res, next) {
-  Map.deleteMany({ _id: req.params.id }, (err, hero) => {
+  Map.delete({ _id: req.params.id }, (err, map) => {
     if (err) {
-      res.json({
+      return res.json({
         error: err,
       });
     }
     res.json({
       message: 'Map deleted successfully',
+    });
+  });
+};
+exports.removeMaps = function (req, res, next) {
+  Map.deleteMany({}, (err, map) => {
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: 'Deleted all maps successfully',
     });
   });
 };

@@ -27,6 +27,15 @@ class App extends Component {
 
   componentDidMount() {
     document.addEventListener('keydown', this.keyRecord, false);
+    this.getData();
+  }
+
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.keyRecord, false);
+  }
+
+  getData = () => {
     fetch('http://localhost:5000/api/get/maps',
       {
         method: 'GET',
@@ -35,11 +44,6 @@ class App extends Component {
       .then((data) => {
         this.setState({ logData: data });
       });
-  }
-
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.keyRecord, false);
   }
 
   keyRecord = (event) => {
@@ -69,7 +73,7 @@ class App extends Component {
       <div onKeyPress={e => console.log(e.key)} className="background">
         <Router>
           <Container fluid={true} style={{ height: '100%' }}>
-            <ManageModal modalOpen={modalOpen} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} />
+            <ManageModal modalOpen={modalOpen} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
             <Row style={{ height: '100%' }}>
               <Col>
                 <Sidebar openModal={this.openModal} />
@@ -96,7 +100,7 @@ class App extends Component {
                 </Container>
                 <Container fluid={true}>
                   <div id="feed" />
-                  <SessionTable data={logData.length != 0 ? logData[0].sensorData : []} />
+                  <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
               <Col>
