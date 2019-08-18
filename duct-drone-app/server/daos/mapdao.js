@@ -11,7 +11,7 @@ mapSchema.statics = {
     this.find(query, cb);
   },
   delete(query, cb) {
-    this.findOneAndDelette(query, cb);
+    this.findOneAndDelete(query, cb);
   },
 };
 
