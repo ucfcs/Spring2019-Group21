@@ -13,9 +13,33 @@ class ManageModal extends Component {
     };
   }
 
-  setActiveSession = (id) => {
-    this.setState({ activeSession: id });
+  setActiveSession = (session) => {
+    this.setState({ activeSession: session });
   }
+
+  clearSession = () => {
+    this.setState({ activeSession: '' });
+  }
+
+  deleteSession = () => {
+    const { getData } = this.props;
+    const { activeSession } = this.state;
+    fetch(`http://localhost:5000/api/remove/${activeSession._id}`, {
+      method: 'DELETE',
+    });
+    getData();
+    this.clearSession();
+  }
+
+  deleteAll = () => {
+    const { getData } = this.props;
+    fetch('http://localhost:5000/api/removeall', {
+      method: 'DELETE',
+    });
+    getData();
+    this.clearSession();
+  }
+
 
   render() {
     const { modalOpen, closeModal, data } = this.props;
@@ -33,6 +57,10 @@ class ManageModal extends Component {
               <Col>
                 <ListGroup />
                 {list}
+              </Col>
+              <Col xs={1}>
+                <Button variant="outline-danger" onClick={this.deleteSession}>&#128465;</Button>
+                <Button variant="danger" onClick={this.deleteAll}>Delete All</Button>
               </Col>
               <Col>
                 <SessionTable data={activeSession ? activeSession.sensorData : []} />
