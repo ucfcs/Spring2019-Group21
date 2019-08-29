@@ -79,3 +79,32 @@ exports.removeMaps = function (req, res, next) {
     });
   });
 };
+
+exports.addSensorData = function(req, res, next) {
+  Map.findOne({_id: req.params.id}).then(function(map,err) {
+    const entry = {
+      time: req.body.time,
+      temperature: req.body.temperature,
+      air_velocity: req.body.air_velocity,
+      coordinates:
+        {
+          x: req.body.coordinates.x,
+          y: req.body.coordinates.y,
+          z: req.body.coordinates.z,
+        },
+      };
+      
+      map.sensorData.push(entry);
+      map.save();
+      if(err) {
+        return res.json({
+          error: err,
+        });
+      }
+      res.json({
+        message: `Successfully updated ${req.params.id}`
+      });
+    }
+  );
+
+}
