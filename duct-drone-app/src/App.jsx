@@ -129,7 +129,7 @@ keyUpHandler = (event) => {
     // Create the velocity command
     var cmdVel = new ROSLIB.Topic
     ({
-      ros : ros,
+      ros : this.state.ros,
       name : '/cmd_vel',
       messageType : 'geometry_msgs/Twist'
     });
