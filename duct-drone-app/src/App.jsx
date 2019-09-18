@@ -22,7 +22,10 @@ class App extends Component {
       logData: [],
       modalOpen: false,
       sessionID: '',
-      ros: '',
+      ros: new ROSLIB.Ros
+        ({
+          url : 'ws://localhost:9090'
+        }),
 
       rightPressed: false,
       leftPressed: false,
@@ -40,10 +43,6 @@ class App extends Component {
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
     this.getData();
-    this.setState({ros : new ROSLIB.Ros
-      ({
-        url : 'ws://localhost:9090'
-      })});
   }
 
 
@@ -139,16 +138,27 @@ keyUpHandler = (event) => {
 
     // Create the twist message
     var twist = new ROSLIB.Message
-    (this.state.linear);
-    console.log("puhlish");
+    ({
+      linear : 
+      {
+        x : linearx / 20,
+        y : 0.0,
+        z : 0.0
+      },
+      angular : 
+      {
+        x : 0.0,
+        y : 0.0,
+        z : rotatez / 20
+      }
+    });
+    console.log("publish");
     // Publishing the twist message
     cmdVel.publish(twist);
   }
   render() {
-    ros = new ROSLIB.Ros({
-      url : 'ws://localhost:9090'
-    });
-  
+
+    let {ros } = this.state;
     ros.on('connection', function() {
       console.log('Connected to websocket server.');
     });
