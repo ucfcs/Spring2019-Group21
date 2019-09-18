@@ -40,7 +40,10 @@ class App extends Component {
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
     this.getData();
-    this.setState(ros, new ROSLIB.Ros({url : 'ws://localhost:9090'}));
+    this.setState({ros : new ROSLIB.Ros
+      ({
+        url : 'ws://localhost:9090'
+      })});
   }
 
 
