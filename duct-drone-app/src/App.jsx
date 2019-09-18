@@ -64,24 +64,32 @@ class App extends Component {
         this.setState({rightPressed: true})
         this.setState({linear: {
           x : 1.0,
+          y: 0.0,
+          z: 0.0,
         }})
     }
     else if(event.keyCode == 65) {
       this.setState({leftPressed: true})
       this.setState({linear: {
         x : -1.0,
+        y: 0.0,
+        z: 0.0,
       }})
     }
     if(event.keyCode == 83) {
       this.setState({downPressed: true})
       this.setState({linear: {
+        x: 0.0,
         y : -1.0,
+        z: 0.0,
       }})
     }
     else if(event.keyCode == 87) {
       this.setState({upPressed: true})
       this.setState({linear: {
+        x: 0.0,
         y : 1.0,
+        z: 0.0,
       }})
     }
 }
@@ -92,24 +100,32 @@ keyUpHandler = (event) => {
       this.setState({rightPressed: false})
       this.setState({linear: {
         x : 0.0,
+        y : 0.0,
+        z : 0.0,
       }})
   }
   else if(event.keyCode == 65) {
     this.setState({leftPressed: false})
     this.setState({linear: {
       x : 0.0,
+      y : 0.0,
+      z : 0.0,
     }})
   }
   if(event.keyCode == 83) {
     this.setState({downPressed: false})
     this.setState({linear: {
+      x : 0.0,
       y : 0.0,
+      z : 0.0,
     }})
   }
   else if(event.keyCode == 87) {
     this.setState({upPressed: false})
     this.setState({linear: {
+      x : 0.0,
       y : 0.0,
+      z : 0.0,
     }})
   }
 }
