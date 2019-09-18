@@ -159,8 +159,23 @@ keyUpHandler = (event) => {
       name : '/cmd_vel',
       messageType : 'geometry_msgs/Twist'
     });
-    var twist = new ROSLIB.Message(this.state.linear);
-    cmdVel.publish(twist);
+    function move(linearx, rotatez)
+    {
+      // Create the velocity command
+      var cmdVel = new ROSLIB.Topic
+      ({
+        ros : ros,
+        name : '/cmd_vel',
+        messageType : 'geometry_msgs/Twist'
+      });
+  
+      // Create the twist message
+      var twist = new ROSLIB.Message
+      (this.state.linear);
+  
+      // Publishing the twist message
+      cmdVel.publish(twist);
+    }
     Number.prototype.pad = function (size) {
       let s = String(this);
       while (s.length < (size || 2)) { s = `0${s}`; }
