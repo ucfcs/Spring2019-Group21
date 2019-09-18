@@ -62,19 +62,19 @@ class App extends Component {
     console.log(event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
-        move (   0, 100);
+        this.move (   0, 100);
     }
     else if(event.keyCode == 65) {
       this.setState({leftPressed: true})
-      move (   0,-100);
+      this.move (   0,-100);
     }
     if(event.keyCode == 83) {
       this.setState({downPressed: true})
-      move (-100,   0);
+      this.move (-100,   0);
     }
     else if(event.keyCode == 87) {
       this.setState({upPressed: true})
-      move ( 100,   0);
+      this.move ( 100,   0);
     }
 }
 
