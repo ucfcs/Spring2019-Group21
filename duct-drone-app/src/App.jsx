@@ -133,7 +133,7 @@ keyUpHandler = (event) => {
       {
         x : 0.0,
         y : 0.0,
-        z : rotatez / 20
+        z : -rotatez / 20
       }
     });
     console.log("publish");
