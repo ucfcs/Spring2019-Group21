@@ -75,6 +75,25 @@ class App extends Component {
     ros.on('close', function() {
       console.log('Connection to websocket server closed.');
     });
+    var cmdVel = new ROSLIB.Topic({
+      ros : ros,
+      name : '/cmd_vel',
+      messageType : 'geometry_msgs/Twist'
+    });
+  
+    var twist = new ROSLIB.Message({
+      linear : {
+        x : 0.1,
+        y : 0.2,
+        z : 0.3
+      },
+      angular : {
+        x : -0.1,
+        y : -0.2,
+        z : -0.3
+      }
+    });
+    cmdVel.publish(twist);
     Number.prototype.pad = function (size) {
       let s = String(this);
       while (s.length < (size || 2)) { s = `0${s}`; }
