@@ -86,35 +86,19 @@ keyUpHandler = (event) => {
     console.log(event.key);
     if(event.keyCode == 68) {
       this.setState({rightPressed: false})
-      this.setState({linear: {
-        x : 0.0,
-        y : 0.0,
-        z : 0.0,
-      }})
+      this.move (   0,0);
   }
   else if(event.keyCode == 65) {
     this.setState({leftPressed: false})
-    this.setState({linear: {
-      x : 0.0,
-      y : 0.0,
-      z : 0.0,
-    }})
+    this.move (   0,0);
   }
   if(event.keyCode == 83) {
     this.setState({downPressed: false})
-    this.setState({linear: {
-      x : 0.0,
-      y : 0.0,
-      z : 0.0,
-    }})
+    this.move (   0,0);
   }
   else if(event.keyCode == 87) {
     this.setState({upPressed: false})
-    this.setState({linear: {
-      x : 0.0,
-      y : 0.0,
-      z : 0.0,
-    }})
+    this.move (   0,0);
   }
 }
 
