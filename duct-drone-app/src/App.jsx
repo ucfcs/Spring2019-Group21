@@ -125,7 +125,7 @@ keyUpHandler = (event) => {
     ({
       linear : 
       {
-        x : linearx / 20,
+        x : linearx / 50,
         y : 0.0,
         z : 0.0
       },
