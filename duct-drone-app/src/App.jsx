@@ -22,18 +22,29 @@ class App extends Component {
       logData: [],
       modalOpen: false,
       sessionID: '',
+
+      rightPressed: false,
+      leftPressed: false,
+      upPressed: false,
+      downPressed:false,
+      linear: {
+        x : 0.0,
+        y : 0.0,
+        z : 0.0
+      }
     };
-    this.keyRecord = this.keyRecord.bind(this);
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.keyRecord, false);
+    document.addEventListener('keydown', this.keyDownHandler, false);
+    document.addEventListener('keyup', this.keyUpHandler, false);
     this.getData();
   }
 
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.keyRecord, false);
+    document.removeEventListener('keydown', this.keyDownHandler, false);
+    document.addEventListener('keyup', this.keyUpHandler, false);
   }
 
   getData = () => {
@@ -47,9 +58,61 @@ class App extends Component {
       });
   }
 
-  keyRecord = (event) => {
-    // console.log(event.key);
+  keyDownHandler = (event) => {
+    console.log(event.key);
+    if(event.keyCode == 68) {
+        this.setState({rightPressed: true})
+        this.setState({linear: {
+          x : 1.0,
+        }})
+    }
+    else if(event.keyCode == 65) {
+      this.setState({leftPressed: true})
+      this.setState({linear: {
+        x : -1.0,
+      }})
+    }
+    if(event.keyCode == 83) {
+      this.setState({downPressed: true})
+      this.setState({linear: {
+        y : -1.0,
+      }})
+    }
+    else if(event.keyCode == 87) {
+      this.setState({upPressed: true})
+      this.setState({linear: {
+        y : 1.0,
+      }})
+    }
+}
+
+keyUpHandler = (event) => {
+    console.log(event.key);
+    if(event.keyCode == 68) {
+      this.setState({rightPressed: false})
+      this.setState({linear: {
+        x : 0.0,
+      }})
   }
+  else if(event.keyCode == 65) {
+    this.setState({leftPressed: false})
+    this.setState({linear: {
+      x : 0.0,
+    }})
+  }
+  if(event.keyCode == 83) {
+    this.setState({downPressed: false})
+    this.setState({linear: {
+      y : 0.0,
+    }})
+  }
+  else if(event.keyCode == 87) {
+    this.setState({upPressed: false})
+    this.setState({linear: {
+      y : 0.0,
+    }})
+  }
+}
 
   openModal = () => {
     this.setState({ modalOpen: true });
@@ -80,19 +143,7 @@ class App extends Component {
       name : '/cmd_vel',
       messageType : 'geometry_msgs/Twist'
     });
-  
-    var twist = new ROSLIB.Message({
-      linear : {
-        x : 0.1,
-        y : 0.2,
-        z : 0.3
-      },
-      angular : {
-        x : -0.1,
-        y : -0.2,
-        z : -0.3
-      }
-    });
+    var twist = new ROSLIB.Message(this.state.linear);
     cmdVel.publish(twist);
     Number.prototype.pad = function (size) {
       let s = String(this);
