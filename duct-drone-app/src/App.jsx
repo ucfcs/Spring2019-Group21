@@ -11,6 +11,7 @@ import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
+var ROSLIB= require('roslib');
 
 class App extends Component {
   constructor(props) {
@@ -59,6 +60,21 @@ class App extends Component {
   }
 
   render() {
+    var ros = new ROSLIB.Ros({
+      url : 'ws://localhost:9090'
+    });
+  
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
+  
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+    });
+  
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+    });
     Number.prototype.pad = function (size) {
       let s = String(this);
       while (s.length < (size || 2)) { s = `0${s}`; }
@@ -68,7 +84,6 @@ class App extends Component {
       logData, currentTemp, currentAirVelocity, sessionID,
     } = this.state;
     const { modalOpen } = this.state;
-
     return (
       <div onKeyPress={e => console.log(e.key)} className="background">
         <Router>
