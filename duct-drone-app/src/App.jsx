@@ -62,35 +62,19 @@ class App extends Component {
     console.log(event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
-        this.setState({linear: {
-          x : 1.0,
-          y: 0.0,
-          z: 0.0,
-        }})
+        move (   0, 100);
     }
     else if(event.keyCode == 65) {
       this.setState({leftPressed: true})
-      this.setState({linear: {
-        x : -1.0,
-        y: 0.0,
-        z: 0.0,
-      }})
+      move (   0,-100);
     }
     if(event.keyCode == 83) {
       this.setState({downPressed: true})
-      this.setState({linear: {
-        x: 0.0,
-        y : -1.0,
-        z: 0.0,
-      }})
+      move (-100,   0);
     }
     else if(event.keyCode == 87) {
       this.setState({upPressed: true})
-      this.setState({linear: {
-        x: 0.0,
-        y : 1.0,
-        z: 0.0,
-      }})
+      move ( 100,   0);
     }
 }
 
@@ -138,6 +122,23 @@ keyUpHandler = (event) => {
     this.setState({ modalOpen: false });
   }
 
+  move = (linearx, rotatez) =>
+  {
+    // Create the velocity command
+    var cmdVel = new ROSLIB.Topic
+    ({
+      ros : ros,
+      name : '/cmd_vel',
+      messageType : 'geometry_msgs/Twist'
+    });
+
+    // Create the twist message
+    var twist = new ROSLIB.Message
+    (this.state.linear);
+    console.log("puhlish");
+    // Publishing the twist message
+    cmdVel.publish(twist);
+  }
   render() {
     var ros = new ROSLIB.Ros({
       url : 'ws://localhost:9090'
@@ -154,28 +155,7 @@ keyUpHandler = (event) => {
     ros.on('close', function() {
       console.log('Connection to websocket server closed.');
     });
-    var cmdVel = new ROSLIB.Topic({
-      ros : ros,
-      name : '/cmd_vel',
-      messageType : 'geometry_msgs/Twist'
-    });
-    function move(linearx, rotatez)
-    {
-      // Create the velocity command
-      var cmdVel = new ROSLIB.Topic
-      ({
-        ros : ros,
-        name : '/cmd_vel',
-        messageType : 'geometry_msgs/Twist'
-      });
-  
-      // Create the twist message
-      var twist = new ROSLIB.Message
-      (this.state.linear);
-  
-      // Publishing the twist message
-      cmdVel.publish(twist);
-    }
+
     Number.prototype.pad = function (size) {
       let s = String(this);
       while (s.length < (size || 2)) { s = `0${s}`; }
