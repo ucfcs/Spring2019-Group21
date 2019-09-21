@@ -15,6 +15,7 @@ exports.createMap = function (req, res, next) {
     }
     res.json({
       message: 'Map created successfully',
+      id: map.id,
     });
   });
 };
