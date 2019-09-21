@@ -11,7 +11,7 @@ import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
-var ROSLIB= require('roslib');
+var ROSLIB = require('roslib');
 
 class App extends Component {
   constructor(props) {
@@ -142,7 +142,7 @@ keyUpHandler = (event) => {
   }
   render() {
 
-    let {ros } = this.state;
+    let { ros } = this.state;
     ros.on('connection', function() {
       console.log('Connected to websocket server.');
     });
