@@ -1,4 +1,4 @@
-const Map = require('../daos/mapdao');
+const Map = require('./../daos/mapdao');
 
 exports.createMap = function (req, res, next) {
   const map = {
