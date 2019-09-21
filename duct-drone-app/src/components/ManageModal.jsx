@@ -24,7 +24,7 @@ class ManageModal extends Component {
   deleteSession = () => {
     const { getData } = this.props;
     const { activeSession } = this.state;
-    fetch(`http://localhost:5000/api/remove/${activeSession._id}`, {
+    fetch(`http://54.243.15.216:5000/api/remove/${activeSession._id}`, {
       method: 'DELETE',
     });
     getData();
@@ -33,7 +33,7 @@ class ManageModal extends Component {
 
   deleteAll = () => {
     const { getData } = this.props;
-    fetch('http://localhost:5000/api/removeall', {
+    fetch('http://54.243.15.216:5000/api/removeall', {
       method: 'DELETE',
     });
     getData();
