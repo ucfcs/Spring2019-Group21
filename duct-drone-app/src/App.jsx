@@ -11,6 +11,7 @@ import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
+var ROSLIB = require('roslib');
 
 class App extends Component {
   constructor(props) {
@@ -21,18 +22,33 @@ class App extends Component {
       logData: [],
       modalOpen: false,
       sessionID: '',
+      ros: new ROSLIB.Ros
+        ({
+          url : 'ws://localhost:9090'
+        }),
+
+      rightPressed: false,
+      leftPressed: false,
+      upPressed: false,
+      downPressed:false,
+      linear: {
+        x : 0.0,
+        y : 0.0,
+        z : 0.0
+      }
     };
-    this.keyRecord = this.keyRecord.bind(this);
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.keyRecord, false);
+    document.addEventListener('keydown', this.keyDownHandler, false);
+    document.addEventListener('keyup', this.keyUpHandler, false);
     this.getData();
   }
 
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.keyRecord, false);
+    document.removeEventListener('keydown', this.keyDownHandler, false);
+    document.addEventListener('keyup', this.keyUpHandler, false);
   }
 
   getData = () => {
@@ -46,9 +62,45 @@ class App extends Component {
       });
   }
 
-  keyRecord = (event) => {
-    // console.log(event.key);
+  keyDownHandler = (event) => {
+    console.log(event.key);
+    if(event.keyCode == 68) {
+        this.setState({rightPressed: true})
+        this.move (   0, 100);
+    }
+    else if(event.keyCode == 65) {
+      this.setState({leftPressed: true})
+      this.move (   0,-100);
+    }
+    if(event.keyCode == 83) {
+      this.setState({downPressed: true})
+      this.move (-100,   0);
+    }
+    else if(event.keyCode == 87) {
+      this.setState({upPressed: true})
+      this.move ( 100,   0);
+    }
+}
+
+keyUpHandler = (event) => {
+    console.log(event.key);
+    if(event.keyCode == 68) {
+      this.setState({rightPressed: false})
+      this.move (   0,0);
   }
+  else if(event.keyCode == 65) {
+    this.setState({leftPressed: false})
+    this.move (   0,0);
+  }
+  if(event.keyCode == 83) {
+    this.setState({downPressed: false})
+    this.move (   0,0);
+  }
+  else if(event.keyCode == 87) {
+    this.setState({upPressed: false})
+    this.move (   0,0);
+  }
+}
 
   openModal = () => {
     this.setState({ modalOpen: true });
@@ -58,7 +110,51 @@ class App extends Component {
     this.setState({ modalOpen: false });
   }
 
+  move = (linearx, rotatez) =>
+  {
+    // Create the velocity command
+    var cmdVel = new ROSLIB.Topic
+    ({
+      ros : this.state.ros,
+      name : '/cmd_vel',
+      messageType : 'geometry_msgs/Twist'
+    });
+
+    // Create the twist message
+    var twist = new ROSLIB.Message
+    ({
+      linear : 
+      {
+        x : linearx / 50,
+        y : 0.0,
+        z : 0.0
+      },
+      angular : 
+      {
+        x : 0.0,
+        y : 0.0,
+        z : -rotatez / 20
+      }
+    });
+    console.log("publish");
+    // Publishing the twist message
+    cmdVel.publish(twist);
+  }
   render() {
+
+    let { ros } = this.state;
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
+  
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+    });
+  
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+    });
+
     Number.prototype.pad = function (size) {
       let s = String(this);
       while (s.length < (size || 2)) { s = `0${s}`; }
@@ -68,7 +164,6 @@ class App extends Component {
       logData, currentTemp, currentAirVelocity, sessionID,
     } = this.state;
     const { modalOpen } = this.state;
-
     return (
       <div onKeyPress={e => console.log(e.key)} className="background">
         <Router>
