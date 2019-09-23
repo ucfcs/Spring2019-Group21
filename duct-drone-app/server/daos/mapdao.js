@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mapSchema = require('../models/mapModel');
+const mapSchema = require('./../models/mapModel');
 
 mapSchema.statics = {
   create(data, cb) {

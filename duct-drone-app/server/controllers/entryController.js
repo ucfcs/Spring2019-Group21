@@ -1,4 +1,4 @@
-const Entry = require('../daos/entrydao');
+const Entry = require('./../daos/entrydao');
 
 exports.createEntry = function (req, res, next) {
   const entry = {

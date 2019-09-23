@@ -52,7 +52,7 @@ class App extends Component {
   }
 
   getData = () => {
-    fetch('http://localhost:5000/api/get/maps',
+    fetch('http://54.243.15.216:5000/api/get/maps',
       {
         method: 'GET',
       })

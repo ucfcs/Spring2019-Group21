@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const entrySchema = require('../models/entryModel');
+const entrySchema = require('./../models/entryModel');
 
 entrySchema.statics = {
   create(data, cb) {
