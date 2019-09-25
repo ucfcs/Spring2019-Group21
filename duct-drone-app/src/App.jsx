@@ -16,24 +16,22 @@ var ROSLIB = require('roslib');
 class App extends Component {
   constructor(props) {
     super(props);
+    let rosSession = new ROSLIB.Ros
+    ({
+      url : 'ws://localhost:9090'
+    });
     this.state = {
       currentTemp: '0',
       currentAirVelocity: '0',
       logData: [],
       modalOpen: false,
       sessionID: '',
-      ros: new ROSLIB.Ros
-        ({
-          url : 'ws://localhost:9090'
-        }),
+      ros: rosSession,
       listener: new ROSLIB.Topic({
-        ros: new ROSLIB.Ros
-        ({
-          url : 'ws://localhost:9090'
+          ros : rosSession,
+          name : '/listener',
+          messageType : 'std_msgs/String'
         }),
-        name:'/mybot/laser/scan',
-        messageType: 'std_msgs/String',
-      }),
       rightPressed: false,
       leftPressed: false,
       upPressed: false,
@@ -118,8 +116,12 @@ keyUpHandler = (event) => {
   }
 
   startListen = () => {
-    this.state.listener.subscibe( (message) => 
-    console.log('Received message on ' + this.state.listener.name + ': ' + message.data));
+
+  
+    this.state.listener.subscribe(function(message) {
+      console.log('Received message on ' + listener.name + ': ' + message.data);
+      listener.unsubscribe();
+    });
   }
   stopList = () => {
     this.state.listener.unsubscribe();
