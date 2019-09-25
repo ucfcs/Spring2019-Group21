@@ -117,7 +117,7 @@ keyUpHandler = (event) => {
 
   startListen = () => {
     this.state.listener.subscribe(function(message) {
-      console.log("Subscribe");
+      console.log(message);
     });
   }
   stopList = () => {
