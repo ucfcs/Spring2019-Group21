@@ -26,7 +26,11 @@ class App extends Component {
         ({
           url : 'ws://localhost:9090'
         }),
-
+      listener: new ROSLIB.Topic({
+        ros: ros,
+        name:'/mybot/laser/scan',
+        messageType: 'std_msgs/String',
+      }),
       rightPressed: false,
       leftPressed: false,
       upPressed: false,
@@ -42,7 +46,7 @@ class App extends Component {
   componentDidMount() {
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
-    this.getData();
+    this.startListen();
   }
 
 
@@ -52,7 +56,7 @@ class App extends Component {
   }
 
   getData = () => {
-    fetch('http://localhost:5000/api/get/maps',
+    fetch('http://54.243.15.216:5000/api/get/maps',
       {
         method: 'GET',
       })
@@ -110,10 +114,18 @@ keyUpHandler = (event) => {
     this.setState({ modalOpen: false });
   }
 
+  startListen = () => {
+    this.state.listener.subscibe( (message) => 
+    console.log('Received message on ' + this.state.listener.name + ': ' + message.data));
+  }
+  stopList = () => {
+    this.state.listener.unsubscribe();
+  }
+
   move = (linearx, rotatez) =>
   {
     // Create the velocity command
-    var cmdVel = new ROSLIB.Topic
+    let cmdVel = new ROSLIB.Topic
     ({
       ros : this.state.ros,
       name : '/cmd_vel',
