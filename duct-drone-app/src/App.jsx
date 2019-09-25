@@ -18,7 +18,7 @@ class App extends Component {
     super(props);
     let rosSession = new ROSLIB.Ros
     ({
-      url : 'ws://localhost:11311'
+      url : 'ws://localhost:9090'
     });
     this.state = {
       currentTemp: '0',
