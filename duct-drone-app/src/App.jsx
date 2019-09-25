@@ -27,7 +27,10 @@ class App extends Component {
           url : 'ws://localhost:9090'
         }),
       listener: new ROSLIB.Topic({
-        ros: ros,
+        ros: new ROSLIB.Ros
+        ({
+          url : 'ws://localhost:9090'
+        }),
         name:'/mybot/laser/scan',
         messageType: 'std_msgs/String',
       }),
