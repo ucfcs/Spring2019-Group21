@@ -30,7 +30,7 @@ class App extends Component {
       listener: new ROSLIB.Topic({
           ros : rosSession,
           name : '/mybot/laser/scan',
-          messageType : 'std_msgs/String'
+          messageType : 'sensor_msgs/LaserScan'
         }),
       rightPressed: false,
       leftPressed: false,
