@@ -119,7 +119,7 @@ keyUpHandler = (event) => {
 
   
     this.state.listener.subscribe(function(message) {
-      console.log('Received message on ' + listener.name + ': ' + message.data);
+      console.log("Subscribe");
       listener.unsubscribe();
     });
   }
