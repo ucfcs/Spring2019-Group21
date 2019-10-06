@@ -196,7 +196,7 @@ keyUpHandler = (event) => {
                 </Container>
                 <Container fluid={true}>
                   {/* <div id="feed" /> */}
-                  <ReactHLS url={"http://localhost:8080"} />
+                  <ReactHLS url={"http://localhost:8080/camera/livestream.m3u8"} />
 
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
