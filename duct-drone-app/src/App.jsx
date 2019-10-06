@@ -196,7 +196,7 @@ keyUpHandler = (event) => {
                 </Container>
                 <Container fluid={true}>
                   {/* <div id="feed" /> */}
-                  <ReactHLS url={"https://content.jwplatform.com/manifests/yp34SRmf.m3u8"} />
+                  <ReactHLS url={"http://localhost:8080"} />
 
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
