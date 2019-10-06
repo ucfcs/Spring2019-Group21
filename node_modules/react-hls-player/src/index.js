@@ -1,0 +1,66 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import Player from './components/react-hls-player';
+
+import "./index.scss";
+
+class Index extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      hlsUrl : 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
+      destroy : false
+    }
+
+    this._handleInputBlur = this._handleInputBlur.bind(this);
+    this._handleEnter = this._handleEnter.bind(this);
+    this._handleDestroyClick = this._handleDestroyClick.bind(this);
+  }
+
+  _handleInputBlur (e) {
+    this.setState({
+      hlsUrl : e.target.value
+    })
+  }
+
+  _handleEnter (e) {
+    if (e.keyCode === 13) {
+      this.setState({
+        hlsUrl : e.target.value
+      })
+    }
+  }
+
+  _handleDestroyClick () {
+    this.setState({
+      destroy : true
+    })
+  }
+
+  render () {
+    let { hlsUrl, destroy } = this.state;
+
+    return (
+      <div>
+        <div className="url-input-area">
+          <label>hls url : </label>
+          <input type="text"
+            defaultValue={hlsUrl}
+            onBlur={this._handleInputBlur}
+            onKeyUp={this._handleEnter}/>
+        </div>
+        { !destroy
+          ? <Player url={hlsUrl} videoProps={{ loop : true }} />
+          : null }
+        <br />
+        <button
+          className="destroy-btn"
+          onClick={this._handleDestroyClick}>Destroy Video</button>
+      </div>
+    )
+  }
+}
+
+ReactDOM.render(<Index />, document.getElementById('container'));
