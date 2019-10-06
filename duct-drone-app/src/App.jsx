@@ -11,6 +11,7 @@ import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
+import ReactHLS from 'react-hls-player';
 var ROSLIB = require('roslib');
 
 class App extends Component {
@@ -194,7 +195,9 @@ keyUpHandler = (event) => {
 
                 </Container>
                 <Container fluid={true}>
-                  <div id="feed" />
+                  {/* <div id="feed" /> */}
+                  <ReactHLS url={"http://10.171.204.183:8080/camera/livestream.m3u8"} />
+
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
