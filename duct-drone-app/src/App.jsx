@@ -17,17 +17,22 @@ var ROSLIB = require('roslib');
 class App extends Component {
   constructor(props) {
     super(props);
+    let rosSession = new ROSLIB.Ros
+    ({
+      url : 'ws://localhost:9090'
+    });
     this.state = {
       currentTemp: '0',
       currentAirVelocity: '0',
       logData: [],
       modalOpen: false,
       sessionID: '',
-      ros: new ROSLIB.Ros
-        ({
-          url : 'ws://localhost:9090'
+      ros: rosSession,
+      listener: new ROSLIB.Topic({
+          ros : rosSession,
+          name : '/mybot/laser/scan',
+          messageType : 'sensor_msgs/LaserScan'
         }),
-
       rightPressed: false,
       leftPressed: false,
       upPressed: false,
@@ -43,7 +48,7 @@ class App extends Component {
   componentDidMount() {
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
-    this.getData();
+    this.startListen();
   }
 
 
@@ -67,19 +72,19 @@ class App extends Component {
     console.log(event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
-        this.move (   0, 100);
+        this.move (   0, -0.5);
     }
     else if(event.keyCode == 65) {
       this.setState({leftPressed: true})
-      this.move (   0,-100);
+      this.move (   0, 0.5);
     }
     if(event.keyCode == 83) {
       this.setState({downPressed: true})
-      this.move (-100,   0);
+      this.move (-0.15, 0);
     }
     else if(event.keyCode == 87) {
       this.setState({upPressed: true})
-      this.move ( 100,   0);
+      this.move ( 0.15,   0);
     }
 }
 
@@ -111,10 +116,19 @@ keyUpHandler = (event) => {
     this.setState({ modalOpen: false });
   }
 
+  startListen = () => {
+    this.state.listener.subscribe(function(message) {
+      console.log(message);
+    });
+  }
+  stopList = () => {
+    this.state.listener.unsubscribe();
+  }
+
   move = (linearx, rotatez) =>
   {
     // Create the velocity command
-    var cmdVel = new ROSLIB.Topic
+    let cmdVel = new ROSLIB.Topic
     ({
       ros : this.state.ros,
       name : '/cmd_vel',
@@ -126,7 +140,7 @@ keyUpHandler = (event) => {
     ({
       linear : 
       {
-        x : linearx / 50,
+        x : linearx,
         y : 0.0,
         z : 0.0
       },
@@ -134,7 +148,7 @@ keyUpHandler = (event) => {
       {
         x : 0.0,
         y : 0.0,
-        z : -rotatez / 20
+        z : rotatez
       }
     });
     console.log("publish");
