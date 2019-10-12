@@ -61,7 +61,7 @@ class App extends Component {
 
   getData = () => {
     console.log("get");
-    fetch('http://localhost:5000/api/get/maps',
+    fetch('http://'+this.state.serverIP + '/api/get/maps',
       {
         method: 'GET',
       })
@@ -79,21 +79,17 @@ class App extends Component {
   }
   connectServer = () => {
     let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
-
+    this.setState({ serverConnected: false});
+    this.setState({ logData: [] })
       fetch('http://' + this.state.serverIP + '/api/get/maps',
       {
         method: 'GET',
       })
       .then(response => 
         {
-          console.log(response.status);
-          if(response.status==200){
+          if(response.ok){
             this.setState({ serverConnected: true });
             this.getData();
-          }
-          else {
-            //TODO: Add Alert
-            this.setState({ serverConnected: false});
           }
         })
   }
