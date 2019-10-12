@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Container from 'react-bootstrap/Container';
 import {
-  Button, ButtonToolbar, Row, Col,
+  Button, ButtonToolbar, Row, Col, Form
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -17,22 +17,19 @@ var ROSLIB = require('roslib');
 class App extends Component {
   constructor(props) {
     super(props);
-    let rosSession = new ROSLIB.Ros
-    ({
-      url : 'ws://localhost:9090'
-    });
+
     this.state = {
       currentTemp: '0',
       currentAirVelocity: '0',
       logData: [],
       modalOpen: false,
       sessionID: '',
-      ros: rosSession,
-      listener: new ROSLIB.Topic({
-          ros : rosSession,
-          name : '/mybot/laser/scan',
-          messageType : 'sensor_msgs/LaserScan'
-        }),
+      rosConnected: false,
+      ros: '',
+      listener: '',
+      ROSIP: '',
+      serverIP: '',
+      serverConnected: false,
       rightPressed: false,
       leftPressed: false,
       upPressed: false,
@@ -45,10 +42,15 @@ class App extends Component {
     };
   }
 
+
+
   componentDidMount() {
-    document.addEventListener('keydown', this.keyDownHandler, false);
-    document.addEventListener('keyup', this.keyUpHandler, false);
-    this.startListen();
+    if(this.state.rosConnected) {
+      document.addEventListener('keydown', this.keyDownHandler, false);
+      document.addEventListener('keyup', this.keyUpHandler, false);
+    }
+    
+    
   }
 
 
@@ -67,9 +69,61 @@ class App extends Component {
         this.setState({ logData: data });
       });
   }
+  updateServerIP = (event) => {
+    console.log(event.target.value);
+    this.setState({ serverIP: event.target.value});
+  }
+  updateROSIP = (event) => {
+    this.setState({ ROSIP: event.target.value});
+  }
+  connectServer = () => {
+    let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
+    if(!this.state.ROSIP.match(regex))
+      console.log("please enter a valid ROS IP");
+    else {
+      
+    }
+  }
+  connectROS = () => {
+    let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
+    if(!this.state.ROSIP.match(regex))
+      console.log("please enter a valid ROS IP");
+    else {
+      let rosSession = new ROSLIB.Ros
+      ({
+        url : 'ws://' + this.state.ROSIP
+      });
+      this.setState({ ros: rosSession});
+  
+      let { ros } = this.state;
+      if(ros == '')
+        console.log("ROS IS NOT DEFINED");
+      else {
+        ros.on('error', function(error) {
+          console.log('Error connecting to websocket server: ', error);
+          this.setState({ rosConnected: false })
+        });
+    
+        ros.on('connection', function() {
+          console.log('Connected to websocket server.');
+          this.setState({ rosConnected: true })
+        });
+        if(this.state.rosConnected) {
+          this.setState({ listener: new ROSLIB.Topic({
+            ros : rosSession,
+            name : '/mybot/laser/scan',
+            messageType : 'sensor_msgs/LaserScan'
+          })});
+          this.startListen();
+        }
+      }
 
+    }
+
+
+  }
   keyDownHandler = (event) => {
-    console.log(event.key);
+    // console.log(event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
         this.move (   0, -0.5);
@@ -89,7 +143,7 @@ class App extends Component {
 }
 
 keyUpHandler = (event) => {
-    console.log(event.key);
+    // console.log(event.key);
     if(event.keyCode == 68) {
       this.setState({rightPressed: false})
       this.move (   0,0);
@@ -151,25 +205,10 @@ keyUpHandler = (event) => {
         z : rotatez
       }
     });
-    console.log("publish");
     // Publishing the twist message
     cmdVel.publish(twist);
   }
   render() {
-
-    let { ros } = this.state;
-    ros.on('connection', function() {
-      console.log('Connected to websocket server.');
-    });
-  
-    ros.on('error', function(error) {
-      console.log('Error connecting to websocket server: ', error);
-    });
-  
-    ros.on('close', function() {
-      console.log('Connection to websocket server closed.');
-    });
-
     Number.prototype.pad = function (size) {
       let s = String(this);
       while (s.length < (size || 2)) { s = `0${s}`; }
@@ -180,13 +219,13 @@ keyUpHandler = (event) => {
     } = this.state;
     const { modalOpen } = this.state;
     return (
-      <div onKeyPress={e => console.log(e.key)} className="background">
+      <div className="background">
         <Router>
           <Container fluid={true} style={{ height: '100%' }}>
             <ManageModal modalOpen={modalOpen} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
             <Row style={{ height: '100%' }}>
               <Col>
-                <Sidebar openModal={this.openModal} />
+                <Sidebar openModal={this.openModal} connectROS={this.connectROS} updateROSIP={this.updateROSIP} updateServerIP={this.updateServerIP} />
               </Col>
               <Col xs={8}>
                 <Container fluid={true}>
@@ -210,7 +249,7 @@ keyUpHandler = (event) => {
                 </Container>
                 <Container fluid={true}>
                   {/* <div id="feed" /> */}
-                  <ReactHLS url={"http://10.171.204.197:8080/camera/livestream.m3u8"} controls={false} autoplay={true}/>
+                  <ReactHLS url={"http://" + this.state.droneIP + ":8080/camera/livestream.m3u8"} controls={false} autoplay={true}/>
 
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
