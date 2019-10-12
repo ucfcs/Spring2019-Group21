@@ -71,19 +71,19 @@ class App extends Component {
     console.log(event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
-        this.move (   0, 100);
+        this.move (   0, -0.5);
     }
     else if(event.keyCode == 65) {
       this.setState({leftPressed: true})
-      this.move (   0,-100);
+      this.move (   0, 0.5);
     }
     if(event.keyCode == 83) {
       this.setState({downPressed: true})
-      this.move (-100,   0);
+      this.move (-0.15, 0);
     }
     else if(event.keyCode == 87) {
       this.setState({upPressed: true})
-      this.move ( 100,   0);
+      this.move ( 0.15,   0);
     }
 }
 
@@ -139,7 +139,7 @@ keyUpHandler = (event) => {
     ({
       linear : 
       {
-        x : linearx / 50,
+        x : linearx,
         y : 0.0,
         z : 0.0
       },
@@ -147,7 +147,7 @@ keyUpHandler = (event) => {
       {
         x : 0.0,
         y : 0.0,
-        z : -rotatez / 20
+        z : rotatez
       }
     });
     console.log("publish");
