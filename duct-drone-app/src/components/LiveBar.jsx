@@ -9,7 +9,7 @@ function LiveBar(props) {
     <Row>
       <Col>
         <div className="circleBase type1">
-          {currentTemp}F
+          {currentTemp}C°
         </div>
       </Col>
       <Col>

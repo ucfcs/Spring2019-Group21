@@ -60,7 +60,8 @@ class App extends Component {
   }
 
   getData = () => {
-    fetch('http://54.243.15.216:5000/api/get/maps',
+    console.log("get");
+    fetch('http://localhost:5000/api/get/maps',
       {
         method: 'GET',
       })
@@ -86,8 +87,14 @@ class App extends Component {
       .then(response => 
         {
           console.log(response.status);
-          if(response.status==200)
+          if(response.status==200){
             this.setState({ serverConnected: true });
+            this.getData();
+          }
+          else {
+            //TODO: Add Alert
+            this.setState({ serverConnected: false});
+          }
         })
   }
   connectROS = () => {
@@ -100,7 +107,7 @@ class App extends Component {
         url : 'ws://' + this.state.ROSIP
       });
       this.setState({ ros: rosSession});
-  
+      //TODO: Add Alert
       let { ros } = this.state;
       if(ros == '')
         console.log("ROS IS NOT DEFINED");
@@ -221,27 +228,27 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      logData, currentTemp, currentAirVelocity, sessionID,
+      logData, currentTemp, currentAirVelocity, sessionID, serverConnected, rosConnected
     } = this.state;
     const { modalOpen } = this.state;
     return (
       <div className="background">
         <Router>
           <Container fluid={true} style={{ height: '100%' }}>
-            <ManageModal modalOpen={modalOpen} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
+            <ManageModal modalOpen={modalOpen} serverIP={this.state.serverIP} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
             <Row style={{ height: '100%' }}>
               <Col>
-                <Sidebar openModal={this.openModal} connectServer={this.connectServer} connectROS={this.connectROS} updateROSIP={this.updateROSIP} updateServerIP={this.updateServerIP} />
+                <Sidebar openModal={this.openModal} rosConnected={this.state.rosConnected} serverConnected={this.state.serverConnected} connectServer={this.connectServer} connectROS={this.connectROS} updateROSIP={this.updateROSIP} updateServerIP={this.updateServerIP} />
               </Col>
               <Col xs={8}>
                 <Container fluid={true}>
                   <ButtonToolbar>
                     <Row style={{ width: '100%' }}>
                       <Col>
-                        <Button variant={sessionID ? 'success' : 'warning'} size="lg">
+                        <Button variant={rosConnected ? 'success' : 'warning'} size="lg">
                             Drone Status:
                           {' '}
-                          {sessionID ? 'Connected' : 'Disconnected'}
+                          {rosConnected ? 'Connected' : 'Disconnected'}
                         </Button>
                       </Col>
                       <Col xs={7}>
@@ -255,7 +262,7 @@ keyUpHandler = (event) => {
                 </Container>
                 <Container fluid={true}>
                   {/* <div id="feed" /> */}
-                  <ReactHLS url={"http://" + this.state.droneIP + ":8080/camera/livestream.m3u8"} controls={false} autoplay={true}/>
+                  <ReactHLS url={"http://" + this.ROSIP + "/camera/livestream.m3u8"} controls={false} autoplay={true}/>
 
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
