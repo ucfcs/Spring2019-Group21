@@ -78,11 +78,17 @@ class App extends Component {
   }
   connectServer = () => {
     let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
-    if(!this.state.ROSIP.match(regex))
-      console.log("please enter a valid ROS IP");
-    else {
-      
-    }
+
+      fetch('http://' + this.state.serverIP + '/api/get/maps',
+      {
+        method: 'GET',
+      })
+      .then(response => 
+        {
+          console.log(response.status);
+          if(response.status==200)
+            this.setState({ serverConnected: true });
+        })
   }
   connectROS = () => {
     let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
@@ -225,7 +231,7 @@ keyUpHandler = (event) => {
             <ManageModal modalOpen={modalOpen} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
             <Row style={{ height: '100%' }}>
               <Col>
-                <Sidebar openModal={this.openModal} connectROS={this.connectROS} updateROSIP={this.updateROSIP} updateServerIP={this.updateServerIP} />
+                <Sidebar openModal={this.openModal} connectServer={this.connectServer} connectROS={this.connectROS} updateROSIP={this.updateROSIP} updateServerIP={this.updateServerIP} />
               </Col>
               <Col xs={8}>
                 <Container fluid={true}>

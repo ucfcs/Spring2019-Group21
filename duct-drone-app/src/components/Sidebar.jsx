@@ -7,7 +7,7 @@ import './styles/Sidebar.css';
 class Sidebar extends Component {
 
   render() {
-    const { openModal, connectROS, updateServerIP, updateROSIP } = this.props;
+    const { openModal, connectServer, connectROS, updateServerIP, updateROSIP } = this.props;
     return (
       <Container>
         <Row style={{ height: '30%' }} />
@@ -33,7 +33,7 @@ class Sidebar extends Component {
               onChange={updateServerIP}
             />
             <InputGroup.Append>
-              <Button variant="outline-secondary">Connect</Button>
+              <Button variant="outline-secondary" onClick={connectServer}>Connect</Button>
             </InputGroup.Append>
           </InputGroup>      
         </Row>
