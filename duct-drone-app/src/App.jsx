@@ -102,6 +102,7 @@ class App extends Component {
       ({
         url : 'ws://' + this.state.ROSIP
       });
+      console.log("CONNECT");
       this.setState({ ros: rosSession});
         this.setState({ listener: new ROSLIB.Topic({
           ros : rosSession,
