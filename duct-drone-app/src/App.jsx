@@ -187,6 +187,8 @@ keyUpHandler = (event) => {
   }
 
   startListen = () => {
+    console.log("break");
+    
     this.state.listener.subscribe(function(message) {
       console.log(message);
     });
