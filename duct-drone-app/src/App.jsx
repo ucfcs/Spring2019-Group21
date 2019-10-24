@@ -103,29 +103,35 @@ class App extends Component {
         url : 'ws://' + this.state.ROSIP
       });
       this.setState({ ros: rosSession});
+        this.setState({ listener: new ROSLIB.Topic({
+          ros : rosSession,
+          name : '/mybot/laser/scan',
+          messageType : 'sensor_msgs/LaserScan'
+        })});
+        this.startListen();
       //TODO: Add Alert
-      let { ros } = this.state;
-      if(ros == '')
-        console.log("ROS IS NOT DEFINED");
-      else {
-        ros.on('error', function(error) {
-          console.log('Error connecting to websocket server: ', error);
-          this.setState({ rosConnected: false })
-        });
+      // let { ros } = this.state;
+      // if(ros == '')
+      //   console.log("ROS IS NOT DEFINED");
+      // else {
+      //   ros.on('error', function(error) {
+      //     console.log('Error connecting to websocket server: ', error);
+      //     this.setState({ rosConnected: false })
+      //   });
     
-        ros.on('connection', function() {
-          console.log('Connected to websocket server.');
-          this.setState({ rosConnected: true })
-        });
-        if(this.state.rosConnected) {
-          this.setState({ listener: new ROSLIB.Topic({
-            ros : rosSession,
-            name : '/mybot/laser/scan',
-            messageType : 'sensor_msgs/LaserScan'
-          })});
-          this.startListen();
-        }
-      }
+      //   ros.on('connection', function() {
+      //     console.log('Connected to websocket server.');
+      //     this.setState({ rosConnected: true })
+      //   });
+      //   if(this.state.rosConnected) {
+      //     this.setState({ listener: new ROSLIB.Topic({
+      //       ros : rosSession,
+      //       name : '/mybot/laser/scan',
+      //       messageType : 'sensor_msgs/LaserScan'
+      //     })});
+      //     this.startListen();
+      //   }
+      // }
 
     }
 
