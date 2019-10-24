@@ -19,6 +19,7 @@ class App extends Component {
     super(props);
 
     this.state = {
+      keyFired: false,
       currentTemp: '0',
       currentAirVelocity: '0',
       logData: [],
@@ -45,10 +46,10 @@ class App extends Component {
 
 
   componentDidMount() {
-    if(this.state.rosConnected) {
+    // if(this.state.rosConnected) {
       document.addEventListener('keydown', this.keyDownHandler, false);
       document.addEventListener('keyup', this.keyUpHandler, false);
-    }
+    // }
     
     
   }
@@ -102,37 +103,47 @@ class App extends Component {
       ({
         url : 'ws://' + this.state.ROSIP
       });
+      console.log("CONNECT");
       this.setState({ ros: rosSession});
+        this.setState({ listener: new ROSLIB.Topic({
+          ros : rosSession,
+          name : '/mybot/laser/scan',
+          messageType : 'sensor_msgs/LaserScan'
+        })});
+        this.startListen();
       //TODO: Add Alert
-      let { ros } = this.state;
-      if(ros == '')
-        console.log("ROS IS NOT DEFINED");
-      else {
-        ros.on('error', function(error) {
-          console.log('Error connecting to websocket server: ', error);
-          this.setState({ rosConnected: false })
-        });
+      // let { ros } = this.state;
+      // if(ros == '')
+      //   console.log("ROS IS NOT DEFINED");
+      // else {
+      //   ros.on('error', function(error) {
+      //     console.log('Error connecting to websocket server: ', error);
+      //     this.setState({ rosConnected: false })
+      //   });
     
-        ros.on('connection', function() {
-          console.log('Connected to websocket server.');
-          this.setState({ rosConnected: true })
-        });
-        if(this.state.rosConnected) {
-          this.setState({ listener: new ROSLIB.Topic({
-            ros : rosSession,
-            name : '/mybot/laser/scan',
-            messageType : 'sensor_msgs/LaserScan'
-          })});
-          this.startListen();
-        }
-      }
+      //   ros.on('connection', function() {
+      //     console.log('Connected to websocket server.');
+      //     this.setState({ rosConnected: true })
+      //   });
+      //   if(this.state.rosConnected) {
+      //     this.setState({ listener: new ROSLIB.Topic({
+      //       ros : rosSession,
+      //       name : '/mybot/laser/scan',
+      //       messageType : 'sensor_msgs/LaserScan'
+      //     })});
+      //     this.startListen();
+      //   }
+      // }
 
     }
 
 
   }
   keyDownHandler = (event) => {
-    // console.log(event.key);
+    if(!this.state.keyFired) {
+      this.setState({ keyFired: true})
+    
+    console.log("key down" + event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
         this.move (   0, -0.5);
@@ -149,10 +160,12 @@ class App extends Component {
       this.setState({upPressed: true})
       this.move ( 0.15,   0);
     }
+  }
 }
 
 keyUpHandler = (event) => {
-    // console.log(event.key);
+    this.setState({ keyFired: false})
+    console.log("key up" + event.key);
     if(event.keyCode == 68) {
       this.setState({rightPressed: false})
       this.move (   0,0);
@@ -180,6 +193,8 @@ keyUpHandler = (event) => {
   }
 
   startListen = () => {
+    console.log("break");
+    
     this.state.listener.subscribe(function(message) {
       console.log(message);
     });
@@ -190,6 +205,7 @@ keyUpHandler = (event) => {
 
   move = (linearx, rotatez) =>
   {
+    console.log("tool");
     // Create the velocity command
     let cmdVel = new ROSLIB.Topic
     ({
@@ -214,6 +230,7 @@ keyUpHandler = (event) => {
         z : rotatez
       }
     });
+    console.log(twist);
     // Publishing the twist message
     cmdVel.publish(twist);
   }
