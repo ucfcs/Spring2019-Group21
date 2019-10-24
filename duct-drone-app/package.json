@@ -42,6 +42,7 @@
     "react-bootstrap": "^1.0.0-beta.11",
     "react-bootstrap-table-next": "^3.1.8",
     "react-dom": "^16.8.5",
+    "react-hls-player": "0.0.5",
     "react-joystick-component": "^1.4.0",
     "react-live-clock": "^3.1.0",
     "react-nipple": "^1.0.1",
