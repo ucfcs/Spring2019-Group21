@@ -139,7 +139,7 @@ class App extends Component {
 
   }
   keyDownHandler = (event) => {
-    // console.log(event.key);
+    console.log("key down" + event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
         this.move (   0, -0.5);
@@ -159,7 +159,7 @@ class App extends Component {
 }
 
 keyUpHandler = (event) => {
-    // console.log(event.key);
+    console.log("key up" + event.key);
     if(event.keyCode == 68) {
       this.setState({rightPressed: false})
       this.move (   0,0);
@@ -224,6 +224,7 @@ keyUpHandler = (event) => {
         z : rotatez
       }
     });
+    console.log(twist);
     // Publishing the twist message
     cmdVel.publish(twist);
   }
