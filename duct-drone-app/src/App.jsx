@@ -45,10 +45,10 @@ class App extends Component {
 
 
   componentDidMount() {
-    if(this.state.rosConnected) {
+    // if(this.state.rosConnected) {
       document.addEventListener('keydown', this.keyDownHandler, false);
       document.addEventListener('keyup', this.keyUpHandler, false);
-    }
+    // }
     
     
   }
