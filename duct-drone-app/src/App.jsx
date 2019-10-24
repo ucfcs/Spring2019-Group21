@@ -19,6 +19,7 @@ class App extends Component {
     super(props);
 
     this.state = {
+      keyFired: false,
       currentTemp: '0',
       currentAirVelocity: '0',
       logData: [],
@@ -139,6 +140,9 @@ class App extends Component {
 
   }
   keyDownHandler = (event) => {
+    if(!this.state.keyFired) {
+      this.setState({ keyFired: true})
+    
     console.log("key down" + event.key);
     if(event.keyCode == 68) {
         this.setState({rightPressed: true})
@@ -156,9 +160,11 @@ class App extends Component {
       this.setState({upPressed: true})
       this.move ( 0.15,   0);
     }
+  }
 }
 
 keyUpHandler = (event) => {
+    this.setState({ keyFired: false})
     console.log("key up" + event.key);
     if(event.keyCode == 68) {
       this.setState({rightPressed: false})
