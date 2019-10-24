@@ -196,6 +196,7 @@ keyUpHandler = (event) => {
 
   move = (linearx, rotatez) =>
   {
+    console.log("tool");
     // Create the velocity command
     let cmdVel = new ROSLIB.Topic
     ({
