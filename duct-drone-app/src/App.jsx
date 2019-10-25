@@ -11,7 +11,8 @@ import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
-import ReactHLS from 'react-hls-player';
+import ReactPlayer from 'react-player';
+
 var ROSLIB = require('roslib');
 
 class App extends Component {
@@ -19,6 +20,7 @@ class App extends Component {
     super(props);
 
     this.state = {
+
       keyFired: false,
       currentTemp: '0',
       currentAirVelocity: '0',
@@ -28,6 +30,8 @@ class App extends Component {
       rosConnected: false,
       ros: '',
       listener: '',
+      // IR_DATA
+      IRListener: '',
       ROSIP: '',
       serverIP: '',
       serverConnected: false,
@@ -43,17 +47,13 @@ class App extends Component {
     };
   }
 
-
-
   componentDidMount() {
     // if(this.state.rosConnected) {
       document.addEventListener('keydown', this.keyDownHandler, false);
       document.addEventListener('keyup', this.keyUpHandler, false);
     // }
     
-    
   }
-
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.keyDownHandler, false);
@@ -101,7 +101,7 @@ class App extends Component {
     else {
       let rosSession = new ROSLIB.Ros
       ({
-        url : 'ws://' + this.state.ROSIP
+        url : 'ws://' + this.state.ROSIP + ":9090"
       });
       console.log("CONNECT");
       this.setState({ ros: rosSession});
@@ -110,6 +110,12 @@ class App extends Component {
           name : '/mybot/laser/scan',
           messageType : 'sensor_msgs/LaserScan'
         })});
+        this.setState({ IRListener: new ROSLIB.Topic({
+          ros: rosSession,
+          name: 'ir_data',
+          messageType: 'sensor_msgs/Float32'
+        })});
+
         this.startListen();
       //TODO: Add Alert
       // let { ros } = this.state;
@@ -198,6 +204,9 @@ keyUpHandler = (event) => {
     this.state.listener.subscribe(function(message) {
       console.log(message);
     });
+    this.state.IRListener.subscribe((message) => {
+      console.log(" IRListener: " + message);
+    });
   }
   stopList = () => {
     this.state.listener.unsubscribe();
@@ -274,9 +283,7 @@ keyUpHandler = (event) => {
 
                 </Container>
                 <Container fluid={true}>
-                  {/* <div id="feed" /> */}
-                  <ReactHLS url={"http://" + this.ROSIP + "/camera/livestream.m3u8"} controls={false} autoplay={true}/>
-
+                  <img src={"http://" + this.state.ROSIP + ":8080" + "/stream?topic=/raspicam_node/image_raw&quality=100"}/>
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
