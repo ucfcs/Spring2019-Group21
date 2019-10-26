@@ -11,7 +11,6 @@ import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
-import ReactPlayer from 'react-player';
 
 var ROSLIB = require('roslib');
 
@@ -95,28 +94,33 @@ class App extends Component {
         })
   }
   connectROS = () => {
-    let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
-    if(!this.state.ROSIP.match(regex))
-      console.log("please enter a valid ROS IP");
-    else {
+    // let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
+    // if(!this.state.ROSIP.match(regex))
+    //   console.log("please enter a valid ROS IP");
+    // else {
       let rosSession = new ROSLIB.Ros
       ({
         url : 'ws://' + this.state.ROSIP + ":9090"
       });
-      console.log("CONNECT");
       this.setState({ ros: rosSession});
-        this.setState({ listener: new ROSLIB.Topic({
-          ros : rosSession,
-          name : '/mybot/laser/scan',
-          messageType : 'sensor_msgs/LaserScan'
-        })});
-        this.setState({ IRListener: new ROSLIB.Topic({
+        // this.setState({ listener: new ROSLIB.Topic({
+        //   ros : rosSession,
+        //   name : '/mybot/laser/scan',
+        //   messageType : 'sensor_msgs/LaserScan'
+        // })});
+        var testListener = new ROSLIB.Topic({
           ros: rosSession,
-          name: 'ir_data',
-          messageType: 'sensor_msgs/Float32'
-        })});
-
-        this.startListen();
+          name: '/ir_data',
+          messageType: 'std_msgs/Float32MultiArray'
+        });
+        testListener.subscribe( (message) => console.log(message));
+        // this.setState({ listener: new ROSLIB.Topic({
+        //   ros: rosSession,
+        //   name: '/ir_data',
+        //   messageType: 'sensor_msgs/Float32'
+        // })});
+        //   this.startListen();
+        
       //TODO: Add Alert
       // let { ros } = this.state;
       // if(ros == '')
@@ -141,7 +145,7 @@ class App extends Component {
       //   }
       // }
 
-    }
+    // }
 
 
   }
@@ -203,9 +207,6 @@ keyUpHandler = (event) => {
     
     this.state.listener.subscribe(function(message) {
       console.log(message);
-    });
-    this.state.IRListener.subscribe((message) => {
-      console.log(" IRListener: " + message);
     });
   }
   stopList = () => {
