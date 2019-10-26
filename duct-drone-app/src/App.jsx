@@ -284,7 +284,7 @@ keyUpHandler = (event) => {
 
                 </Container>
                 <Container fluid={true}>
-                  <img src={"http://" + this.state.ROSIP + ":8080" + "/stream?topic=/raspicam_node/image_raw&quality=100"}/>
+                  <img src={"http://" + this.state.ROSIP + ":8080" + "/stream?topic=/raspicam_node/image_raw&quality=100&invert=true"}/>
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
