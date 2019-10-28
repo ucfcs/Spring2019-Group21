@@ -3,7 +3,7 @@ import { Row, Col } from 'react-bootstrap';
 import Clock from 'react-live-clock';
 import './styles/LiveBar.css';
 function LiveBar(props) {
-  const { currentTemp, currentAirVelocity } = props;
+  const { currentTemp, currentHumidity } = props;
   return (
     <>
     <Row style={{ height: '10% '}}/>
@@ -24,10 +24,7 @@ function LiveBar(props) {
       </Col>
       <Col>
         <div className="circleBase type1">
-          {currentAirVelocity}
-          <sup>m</sup>
-            &frasl;
-          <sub>s</sub>
+          {currentHumidity}%
         </div>
       </Col>
     </Row>
