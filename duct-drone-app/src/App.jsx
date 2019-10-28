@@ -23,7 +23,7 @@ class App extends Component {
 
       keyFired: false,
       currentTemp: '0',
-      currentAirVelocity: '0',
+      currentHumidity: '0',
       logData: [],
       manageModalOpen: false,
       sessionID: '',
@@ -112,50 +112,22 @@ class App extends Component {
         url : 'ws://' + this.state.ROSIP + ":9090"
       });
       this.setState({ ros: rosSession});
-        // this.setState({ listener: new ROSLIB.Topic({
-        //   ros : rosSession,
-        //   name : '/mybot/laser/scan',
-        //   messageType : 'sensor_msgs/LaserScan'
-        // })});
-        var testListener = new ROSLIB.Topic({
+        var IRListener = new ROSLIB.Topic({
           ros: rosSession,
           name: '/ir_data',
           messageType: 'std_msgs/Float32MultiArray'
         });
-        testListener.subscribe( (message) => console.log(message));
-        
-        // this.setState({ listener: new ROSLIB.Topic({
-        //   ros: rosSession,
-        //   name: '/ir_data',
-        //   messageType: 'sensor_msgs/Float32'
-        // })});
-        //   this.startListen();
-        
-      //TODO: Add Alert
-      // let { ros } = this.state;
-      // if(ros == '')
-      //   console.log("ROS IS NOT DEFINED");
-      // else {
-      //   ros.on('error', function(error) {
-      //     console.log('Error connecting to websocket server: ', error);
-      //     this.setState({ rosConnected: false })
-      //   });
-    
-      //   ros.on('connection', function() {
-      //     console.log('Connected to websocket server.');
-      //     this.setState({ rosConnected: true })
-      //   });
-      //   if(this.state.rosConnected) {
-      //     this.setState({ listener: new ROSLIB.Topic({
-      //       ros : rosSession,
-      //       name : '/mybot/laser/scan',
-      //       messageType : 'sensor_msgs/LaserScan'
-      //     })});
-      //     this.startListen();
-      //   }
-      // }
-
-    // }
+        var HumidityListener = new ROSLIB.Topic({
+          ros: rosSession,
+          name: '/humidity_data',
+          messageType: 'std_msgs/Float32MultiArray'
+        });
+        IRListener.subscribe( (message) => console.log(message));
+        HumidityListener.subscribe( (message) =>  {
+          console.log(message);
+          this.setState({ currentTemp: Math.round( message.data[0] * 10) / 10});
+          this.setState({ currentHumidity: Math.round( message.data[1] * 10) / 10});
+        });
 
 
   }
@@ -270,7 +242,7 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      logData, currentTemp, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
+      logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
     } = this.state;
     const { manageModalOpen, sessionModalOpen } = this.state;
     return (
@@ -337,7 +309,7 @@ keyUpHandler = (event) => {
                 </Container>
               </Col>
               <Col>
-                <LiveBar currentAirVelocity={currentAirVelocity} currentTemp={currentTemp} />
+                <LiveBar currentTemp={currentTemp} currentHumidity={currentHumidity}/>
               </Col>
             </Row>
           </Container>
