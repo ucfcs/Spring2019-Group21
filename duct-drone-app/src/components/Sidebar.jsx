@@ -7,7 +7,7 @@ import './styles/Sidebar.css';
 class Sidebar extends Component {
 
   render() {
-    const { openModal, connectServer, connectROS, serverConnected, rosConnected, updateServerIP, updateROSIP } = this.props;
+    const { endSession, sessionName, openSessionModal, openManageModal, connectServer, connectROS, serverConnected, rosConnected, updateServerIP, updateROSIP } = this.props;
     return (
       <Container>
         <Row style={{ height: '30%' }} />
@@ -38,15 +38,21 @@ class Sidebar extends Component {
           </InputGroup>      
         </Row>
         <Row>
-          <Button size="lg" variant="outline-primary" block={true}>Start Session</Button>
+          <Button
+            size="lg"
+            variant={(sessionName=='' ? "outline-primary": "outline-secondary")}
+            block={true}
+            onClick={(sessionName=='') ? openSessionModal : endSession}>
+             { (sessionName == '') ? <>Start Session</> :  <>End Session</> }
+          </Button>
         </Row>
         <Row style={{ height: '2%' }} />
-        <Row>
+        {/* <Row>
           <Button size="lg" variant="outline-primary" block={true}>Autonomous</Button>
-        </Row>
+        </Row> */}
         <Row style={{ height: '30%' }} />
         <Row>
-          <Button size="lg" variant="outline-info" block={true} onClick={openModal}>Manage Sessions</Button>
+          <Button size="lg" variant="outline-info" block={true} onClick={openManageModal}>Manage Sessions</Button>
         </Row>
       </Container>
 

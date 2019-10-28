@@ -6,6 +6,7 @@ import {
 import {
   BrowserRouter as Router,
 } from 'react-router-dom';
+import SessionModal from './components/SessionModal';
 import Sidebar from './components/Sidebar';
 import LiveBar from './components/LiveBar';
 import ManageModal from './components/ManageModal';
@@ -24,8 +25,10 @@ class App extends Component {
       currentTemp: '0',
       currentHumidity: '0',
       logData: [],
-      modalOpen: false,
+      manageModalOpen: false,
       sessionID: '',
+      sessionName: '',
+      sessionModalOpen: false,
       rosConnected: false,
       ros: '',
       listener: '',
@@ -76,6 +79,12 @@ class App extends Component {
   }
   updateROSIP = (event) => {
     this.setState({ ROSIP: event.target.value});
+  }
+  updateSessionName = (name) => {
+    this.setState({ sessionName: name});
+  }
+  updateSessionID = (id) => {
+    this.setState({ sessionID: id });
   }
   connectServer = () => {
     let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
@@ -167,13 +176,22 @@ keyUpHandler = (event) => {
   }
 }
 
-  openModal = () => {
-    this.setState({ modalOpen: true });
+  openManageModal = () => {
+    this.setState({ manageModalOpen: true });
   }
 
-  closeModal = () => {
-    this.setState({ modalOpen: false });
+  openSessionModal = () => {
+    this.setState({ sessionModalOpen: true });
   }
+  endSession = () => {
+    this.setState({ sessionName: '' });
+    this.setState({ sessionID: '' });
+  }
+  closeModal = () => {
+    this.setState({ manageModalOpen: false });
+    this.setState({ sessionModalOpen: false});
+  }
+
 
   startListen = () => {
     console.log("break");
@@ -224,34 +242,63 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      logData, currentTemp, sessionID, serverConnected, rosConnected, currentHumidity
+      logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
     } = this.state;
-    const { modalOpen } = this.state;
+    const { manageModalOpen, sessionModalOpen } = this.state;
     return (
       <div className="background">
         <Router>
           <Container fluid={true} style={{ height: '100%' }}>
-            <ManageModal modalOpen={modalOpen} serverIP={this.state.serverIP} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
+            <ManageModal manageModalOpen={manageModalOpen} serverIP={this.state.serverIP} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
+            <SessionModal
+              sessionModalOpen={sessionModalOpen}
+              closeModal={this.closeModal}
+              updateSessionName={this.updateSessionName}
+              updateSessionID={this.updateSessionID}
+              sessionID={sessionID} 
+              serverIP={serverIP}/>
             <Row style={{ height: '100%' }}>
               <Col>
-                <Sidebar openModal={this.openModal} rosConnected={this.state.rosConnected} serverConnected={this.state.serverConnected} connectServer={this.connectServer} connectROS={this.connectROS} updateROSIP={this.updateROSIP} updateServerIP={this.updateServerIP} />
+                <Sidebar
+                  endSession={this.endSession}
+                  sessionName={sessionName}
+                  openSessionModal={this.openSessionModal}
+                  openManageModal={this.openManageModal}
+                  rosConnected={this.state.rosConnected}
+                  serverConnected={this.state.serverConnected}
+                  connectServer={this.connectServer}
+                  connectROS={this.connectROS}
+                  updateROSIP={this.updateROSIP}
+                  updateServerIP={this.updateServerIP} />
               </Col>
               <Col xs={8}>
                 <Container fluid={true}>
                   <ButtonToolbar>
                     <Row style={{ width: '100%' }}>
                       <Col>
-                        <Button variant={rosConnected ? 'success' : 'warning'} size="lg">
+                        <Button variant={rosConnected ? 'success' : 'warning'}>
                             Drone Status:
                           {' '}
                           {rosConnected ? 'Connected' : 'Disconnected'}
                         </Button>
                       </Col>
-                      <Col xs={7}>
-                        <Button variant={sessionID ? 'success' : 'warning'} className="btn-display" disabled={true} size="lg">
-                          {sessionID ? "Session ID: MSB Men's Bathroom" : 'Inactive'}
+                      <Col>
+                        <Button
+                          variant={sessionID ? 'success' : 'warning'}
+                          className="btn-display" disabled={true}
+                          size="lg">
+                          {sessionID !='' ? sessionID : 'Inactive'}
                         </Button>
                       </Col>
+                      <Col>
+                        <Button
+                          variant={sessionName != '' ? 'success' : 'warning'}
+                          className="btn-display" disabled={true}
+                          size="lg">
+                          {sessionName != '' ? sessionName : 'Inactive'}
+                        </Button>
+                      </Col>
+                      
                     </Row>
                   </ButtonToolbar>
 

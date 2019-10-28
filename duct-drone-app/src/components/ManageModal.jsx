@@ -42,14 +42,14 @@ class ManageModal extends Component {
 
 
   render() {
-    const { modalOpen, closeModal, data } = this.props;
+    const { manageModalOpen, closeModal, data } = this.props;
     const { activeSession } = this.state;
     const sessionListData = Object.values(data);
     const list = [];
     sessionListData.forEach(session => list.push(<ListGroup.Item action={true} active={session._id === activeSession._id} onClick={() => this.setActiveSession(session)}>{`${session.name} ${session._id}`}</ListGroup.Item>)
     );
     return (
-      <Modal show={modalOpen} size="lg">
+      <Modal show={manageModalOpen} size="lg">
         <Modal.Header>Manage Sessions</Modal.Header>
         <Modal.Body>
           <Container fluid={true}>
