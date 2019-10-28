@@ -6,7 +6,11 @@ const { Schema } = mongoose;
 const mapSchema = new Schema({
   name: String,
   map_link: String,
-  date: Date,
+  date: {
+    type:  Date,
+    default: Date.now
+  },
+
   sensorData: [entrySchema],
 });
 
