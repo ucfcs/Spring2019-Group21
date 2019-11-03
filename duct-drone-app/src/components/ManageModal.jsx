@@ -46,7 +46,7 @@ class ManageModal extends Component {
     const { activeSession } = this.state;
     const sessionListData = Object.values(data);
     const list = [];
-    sessionListData.forEach(session => list.push(<ListGroup.Item action={true} active={session._id === activeSession._id} onClick={() => this.setActiveSession(session)}>{`${session.name} ${session._id}`}</ListGroup.Item>)
+    sessionListData.forEach(session => list.push(<ListGroup.Item action={true} active={session._id === activeSession._id} onClick={() => this.setActiveSession(session)}>{`${session.name}`}</ListGroup.Item>)
     );
     return (
       <Modal show={manageModalOpen} size="lg">
@@ -54,7 +54,7 @@ class ManageModal extends Component {
         <Modal.Body>
           <Container fluid={true}>
             <Row>
-              <Col>
+              <Col xs={3}>
                 <ListGroup />
                 {list}
               </Col>
