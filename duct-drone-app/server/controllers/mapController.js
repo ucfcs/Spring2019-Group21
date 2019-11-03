@@ -86,13 +86,7 @@ exports.addSensorData = function(req, res, next) {
     const entry = {
       time: req.body.time,
       temperature: req.body.temperature,
-      air_velocity: req.body.air_velocity,
-      coordinates:
-        {
-          x: req.body.coordinates.x,
-          y: req.body.coordinates.y,
-          z: req.body.coordinates.z,
-        },
+      humidity: req.body.humidity,
       };
       
       map.sensorData.push(entry);
