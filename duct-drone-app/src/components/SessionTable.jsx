@@ -29,7 +29,7 @@ function SessionTable(props) {
       width: 120,
     },
     {
-      Header: 'Air Velocity',
+      Header: 'Humidity',
       accessor: 'humidity.$numberDecimal',
       width: 120,
     },
