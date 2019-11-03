@@ -127,6 +127,22 @@ class App extends Component {
           console.log(message);
           this.setState({ currentTemp: Math.round( message.data[0] * 10) / 10});
           this.setState({ currentHumidity: Math.round( message.data[1] * 10) / 10});
+          const { sessionID } = this.state;
+          const data = {
+              temperature: this.state.currentTemp,
+              humidity: this.state.currentHumidity
+          };
+          console.log("REACH FETCHING");
+          fetch('http://'+this.state.serverIP + '/api/update/map/' + sessionID,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+          }).then( () => 
+          console.log("updated sensor record"))
+          
         });
 
 
