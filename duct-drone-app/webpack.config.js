@@ -6,7 +6,7 @@ const htmlPlugin = new HtmlWebPackPlugin({
   template: './src/index.html',
   filename: './index.html',
 });
-
+// NOTE BUNDLE JS DIRECTORY GENERATION IN PRODUCTION AND DEV SERVER ARE NOT THE SAME!?!?
 module.exports = {
   output: {
     filename: 'bundle.js',

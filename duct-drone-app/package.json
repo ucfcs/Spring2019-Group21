@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/electron-starter.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open",
+    "start": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
     "electron": "electron .",
     "dev" : "nf start -p 8080"
