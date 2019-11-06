@@ -1,3 +1,8 @@
 .modal-dialog {
   max-width: 80%;
 }
+.list-group-item {
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+}

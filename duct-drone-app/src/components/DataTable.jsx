@@ -11,12 +11,9 @@ function DataTable(props) {
       className="-striped"
       data={data.length != 0 ? data : []}
       columns={columns.length != 0 ? columns : []}
-      defaultPageSize={pageSize}
-      showPaginationBottom={false}
+      defaultPageSize={10}
+      showPaginationBottom={true}
       showPageSizeOptions={false}
-      style={{
-        height: '400px',
-      }}
     />
   );
 }

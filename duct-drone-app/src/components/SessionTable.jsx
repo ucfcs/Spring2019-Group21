@@ -5,16 +5,20 @@ function SessionTable(props) {
   const logCols = [
     {
       Header: 'Time',
-      accessor: 'time',
+      accessor: 'date',
       Cell: (row) => {
-        const date = new Date(row.row.time);
+        const date = new Date(row.row.date);
         return (
           <div>
             <span>
-              {date.getHours().pad(2)}
-:
-              {date.getMinutes().pad(2)}
+              {date.getMonth()}/
+              {date.getDate()}/
+              {date.getFullYear()}
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {date.getUTCHours()}:
+              {date.getUTCMinutes()}              
             </span>
+
           </div>
         );
       },
@@ -22,37 +26,12 @@ function SessionTable(props) {
     {
       Header: 'Temperature',
       accessor: 'temperature.$numberDecimal',
+      width: 120,
     },
     {
-      Header: 'Air Velocity',
-      accessor: 'air_velocity.$numberDecimal',
-    },
-    {
-      Header: 'X',
-      accessor: 'coordinateX',
-      Cell: row => (
-        <div>
-          <span>{row.row._original.coordinates.x}</span>
-        </div>
-      ),
-    },
-    {
-      Header: 'Y',
-      accessor: 'coordinateY',
-      Cell: row => (
-        <div>
-          <span>{row.row._original.coordinates.y}</span>
-        </div>
-      ),
-    },
-    {
-      Header: 'Z',
-      accessor: 'coordinateZ',
-      Cell: row => (
-        <div>
-          <span>{row.row._original.coordinates.z}</span>
-        </div>
-      ),
+      Header: 'Humidity',
+      accessor: 'humidity.$numberDecimal',
+      width: 120,
     },
   ];
   const { data } = props;
