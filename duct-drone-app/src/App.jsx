@@ -314,7 +314,7 @@ keyUpHandler = (event) => {
                           disabled={true}
                           size="lg"
                         >
-                          {sessionName != '' ? sessionName : 'Inactive'}
+                          {sessionName !== '' ? sessionName : 'Inactive'}
                         </Button>
                       </Col>
 
@@ -323,7 +323,21 @@ keyUpHandler = (event) => {
 
                 </Container>
                 <Container fluid={true}>
-                  <img src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'} />
+                  <Row>
+                    <Col />
+                    <Col>
+                      <div>
+                        <img
+                          src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
+                          onError={(e) => { e.target.addEventListener('error', null); e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1'; }}
+                          alt="Drone is disconnected or Camera is Malfunctioning"
+                        />
+                      </div>
+                    </Col>
+                    <Col />
+                  </Row>
+
+
                   <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
