@@ -129,7 +129,6 @@ class App extends Component {
     // IRListener.subscribe(message => console.log(message));
     leakListener.subscribe(message =>
       {
-        console.log(message);
         this.setState({leakAlertVal: message.data});
       });
     HumidityListener.subscribe((message) => {
@@ -261,7 +260,7 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
+      ros, logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
     } = this.state;
     const { manageModalOpen, sessionModalOpen, leakAlertVal } = this.state;
     return (
@@ -334,7 +333,7 @@ keyUpHandler = (event) => {
                 </Container>
               </Col>
               <Col>
-                <LiveBar currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
+                <LiveBar ros={ros} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
               </Col>
             </Row>
           </Container>
