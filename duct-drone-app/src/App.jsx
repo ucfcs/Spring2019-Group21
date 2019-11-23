@@ -20,7 +20,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-
+      leakAlertVal: 0,
       keyFired: false,
       currentTemp: '0',
       currentHumidity: '0',
@@ -115,17 +115,23 @@ class App extends Component {
       url: `ws://${this.state.ROSIP}:9090`,
     });
     this.setState({ ros: rosSession });
-    const IRListener = new ROSLIB.Topic({
-      ros: rosSession,
-      name: '/ir_data',
-      messageType: 'std_msgs/Float32MultiArray',
-    });
     const HumidityListener = new ROSLIB.Topic({
       ros: rosSession,
       name: '/humidity_data',
       messageType: 'std_msgs/Float32MultiArray',
     });
-    IRListener.subscribe(message => console.log(message));
+    const leakListener = new ROSLIB.Topic({
+      ros: rosSession,
+      name: '/leak_detected',
+      messageType: 'std_msgs/Int32',
+    });
+
+    // IRListener.subscribe(message => console.log(message));
+    leakListener.subscribe(message =>
+      {
+        console.log(message);
+        this.setState({leakAlertVal: message.data});
+      });
     HumidityListener.subscribe((message) => {
       console.log(message);
       this.setState({ currentTemp: Math.round(message.data[0] * 10) / 10 });
@@ -257,7 +263,7 @@ keyUpHandler = (event) => {
     const {
       logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
     } = this.state;
-    const { manageModalOpen, sessionModalOpen } = this.state;
+    const { manageModalOpen, sessionModalOpen, leakAlertVal } = this.state;
     return (
       <div className="background">
         <Router>
@@ -328,7 +334,7 @@ keyUpHandler = (event) => {
                 </Container>
               </Col>
               <Col>
-                <LiveBar currentTemp={currentTemp} currentHumidity={currentHumidity} />
+                <LiveBar currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
               </Col>
             </Row>
           </Container>
