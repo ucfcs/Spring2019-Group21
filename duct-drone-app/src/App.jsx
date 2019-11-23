@@ -41,6 +41,7 @@ class App extends Component {
       leftPressed: false,
       upPressed: false,
       downPressed: false,
+      threshold: 0,
       linear: {
         x: 0.0,
         y: 0.0,
@@ -60,6 +61,16 @@ class App extends Component {
     document.removeEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
   }
+
+  incrementThreshold = () => {
+    this.setState({threshold: this.state.threshold+1}, () => this.updateROSThreshold())
+  }
+  decrementThreshold = () => {
+    let {threshold} = this.state;
+    if(threshold > 0)
+      this.setState({threshold: this.state.threshold-1}, () => this.updateROSThreshold())
+  }
+
 
   getData = () => {
     console.log('get');
@@ -150,6 +161,23 @@ class App extends Component {
           body: JSON.stringify(data),
         }).then(() => console.log('updated sensor record'));
     });
+  }
+
+  updateROSThreshold = () => {
+    // Create the velocity command
+    const cmdThreshold = new ROSLIB.Topic({
+      ros: this.state.ros,
+      name: '/leak_threshold',
+      messageType: 'std_msgs/Int32',
+    });
+
+    // Create the twist message
+    const thresholdMsg = new ROSLIB.Message({
+      data: this.state.threshold,
+    });
+    console.log(thresholdMsg);
+    // Publishing the twist message
+    cmdThreshold.publish(thresholdMsg);
   }
 
   keyDownHandler = (event) => {
@@ -262,7 +290,7 @@ keyUpHandler = (event) => {
     const {
       ros, logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
     } = this.state;
-    const { manageModalOpen, sessionModalOpen, leakAlertVal } = this.state;
+    const { threshold, manageModalOpen, sessionModalOpen, leakAlertVal } = this.state;
     return (
       <div className="background">
         <Router>
@@ -333,7 +361,7 @@ keyUpHandler = (event) => {
                 </Container>
               </Col>
               <Col>
-                <LiveBar ros={ros} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
+                <LiveBar threshold={threshold} incrementThreshold={this.incrementThreshold} decrementThreshold={this.decrementThreshold} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
               </Col>
             </Row>
           </Container>

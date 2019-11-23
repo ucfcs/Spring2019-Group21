@@ -6,47 +6,17 @@ import ChangeThreshold from './ChangeThreshold';
 
 const ROSLIB = require('roslib');
 class LiveBar extends React.Component{
-  state = {
-    threshold: 2,
-    showDecrement: false,
-    showIncrement: false,
-    ros: '',
-  }
-  incrementThreshold = () => {
-    this.setState({threshold: this.state.threshold+1}, () => this.updateROSThreshold())
-    // this.updateROSThreshold();
-  }
-  decrementThreshold = () => {
-    let {threshold} = this.state;
-    if(threshold > 0)
-      this.setState({threshold: threshold-1}, () => this.updateROSThreshold())
-    // this.updateROSThreshold();
-  }
-  componentDidMount() {
-    const rosSession = new ROSLIB.Ros({
-      url: `ws://10.171.204.174:9090`
-    });
-    this.setState({ros: rosSession});
-  }
-  updateROSThreshold = () => {
-    // Create the velocity command
-    const cmdThreshold = new ROSLIB.Topic({
-      ros: this.state.ros,
-      name: '/leak_threshold',
-      messageType: 'std_msgs/Int32',
-    });
+  
 
-    // Create the twist message
-    const thresholdMsg = new ROSLIB.Message({
-      data: this.state.threshold,
-    });
-    console.log(thresholdMsg);
-    // Publishing the twist message
-    cmdThreshold.publish(thresholdMsg);
+  componentDidMount() {
+    // const rosSession = new ROSLIB.Ros({
+    //   url: `ws://${this.props.ROSIP}:9090`
+    // });
+    // this.setState({ros: rosSession});
   }
+
   render() {
-    const {threshold} = this.state;
-  const { ros, updateROSThreshold, currentTemp, currentHumidity, leakAlertVal } = this.props;
+  const { currentTemp, currentHumidity, leakAlertVal, threshold, incrementThreshold, decrementThreshold } = this.props;
   return (
     <>
     <Row style={{ height: '10% '}}/>
@@ -69,7 +39,7 @@ class LiveBar extends React.Component{
       </div>
     </Row>
     <Row>
-      <ChangeThreshold threshold={threshold} decrementThreshold={this.decrementThreshold} incrementThreshold={this.incrementThreshold}/>
+      <ChangeThreshold threshold={threshold} decrementThreshold={decrementThreshold} incrementThreshold={incrementThreshold}/>
     </Row>
     <Row>
         <Alert variant={'warning'} show={leakAlertVal!=0}>Warning! There are {leakAlertVal}/64 pixels currently above threshold!</Alert>
