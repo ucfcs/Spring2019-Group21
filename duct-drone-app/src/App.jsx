@@ -35,7 +35,7 @@ class App extends Component {
       // IR_DATA
       IRListener: '',
       ROSIP: '',
-      serverIP: '',
+      serverIP: 'localhost:5000',
       serverConnected: false,
       rightPressed: false,
       leftPressed: false,
