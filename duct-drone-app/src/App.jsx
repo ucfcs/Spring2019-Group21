@@ -20,7 +20,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-
+      leakAlertVal: 0,
       keyFired: false,
       currentTemp: '0',
       currentHumidity: '0',
@@ -41,6 +41,7 @@ class App extends Component {
       leftPressed: false,
       upPressed: false,
       downPressed: false,
+      threshold: 0,
       linear: {
         x: 0.0,
         y: 0.0,
@@ -60,6 +61,16 @@ class App extends Component {
     document.removeEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
   }
+
+  incrementThreshold = () => {
+    this.setState({threshold: this.state.threshold+1}, () => this.updateROSThreshold())
+  }
+  decrementThreshold = () => {
+    let {threshold} = this.state;
+    if(threshold > 0)
+      this.setState({threshold: this.state.threshold-1}, () => this.updateROSThreshold())
+  }
+
 
   getData = () => {
     console.log('get');
@@ -115,17 +126,22 @@ class App extends Component {
       url: `ws://${this.state.ROSIP}:9090`,
     });
     this.setState({ ros: rosSession });
-    const IRListener = new ROSLIB.Topic({
-      ros: rosSession,
-      name: '/ir_data',
-      messageType: 'std_msgs/Float32MultiArray',
-    });
     const HumidityListener = new ROSLIB.Topic({
       ros: rosSession,
       name: '/humidity_data',
       messageType: 'std_msgs/Float32MultiArray',
     });
-    IRListener.subscribe(message => console.log(message));
+    const leakListener = new ROSLIB.Topic({
+      ros: rosSession,
+      name: '/leak_detected',
+      messageType: 'std_msgs/Int32',
+    });
+
+    // IRListener.subscribe(message => console.log(message));
+    leakListener.subscribe(message =>
+      {
+        this.setState({leakAlertVal: message.data});
+      });
     HumidityListener.subscribe((message) => {
       console.log(message);
       this.setState({ currentTemp: Math.round(message.data[0] * 10) / 10 });
@@ -145,6 +161,23 @@ class App extends Component {
           body: JSON.stringify(data),
         }).then(() => console.log('updated sensor record'));
     });
+  }
+
+  updateROSThreshold = () => {
+    // Create the velocity command
+    const cmdThreshold = new ROSLIB.Topic({
+      ros: this.state.ros,
+      name: '/leak_threshold',
+      messageType: 'std_msgs/Int32',
+    });
+
+    // Create the twist message
+    const thresholdMsg = new ROSLIB.Message({
+      data: this.state.threshold,
+    });
+    console.log(thresholdMsg);
+    // Publishing the twist message
+    cmdThreshold.publish(thresholdMsg);
   }
 
   keyDownHandler = (event) => {
@@ -255,9 +288,9 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
+      ros, logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
     } = this.state;
-    const { manageModalOpen, sessionModalOpen } = this.state;
+    const { threshold, manageModalOpen, sessionModalOpen, leakAlertVal } = this.state;
     return (
       <div className="background">
         <Router>
@@ -342,7 +375,7 @@ keyUpHandler = (event) => {
                 </Container>
               </Col>
               <Col>
-                <LiveBar currentTemp={currentTemp} currentHumidity={currentHumidity} />
+                <LiveBar threshold={threshold} incrementThreshold={this.incrementThreshold} decrementThreshold={this.decrementThreshold} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
               </Col>
             </Row>
           </Container>
