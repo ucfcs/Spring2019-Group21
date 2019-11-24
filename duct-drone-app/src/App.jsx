@@ -41,6 +41,8 @@ class App extends Component {
       leftPressed: false,
       upPressed: false,
       downPressed: false,
+      extendPressed: false,
+      retractPressed: false,
       threshold: 0,
       linear: {
         x: 0.0,
@@ -185,19 +187,27 @@ class App extends Component {
       this.setState({ keyFired: true });
 
       console.log(`key down${event.key}`);
-      if (event.keyCode == 68) {
+      if (event.keyCode == 82) { //  r key
+        this.setState({ retractPressed: true });
+        this.move(0, -1, 0);
+      }
+      else if (event.keyCode == 70) { // f key
+        this.setState({ extendPressed: true }); 
+        this.move(0, 1, 0);
+      }
+      else if (event.keyCode == 68) {
         this.setState({ rightPressed: true });
-        this.move(0, -0.5);
+        this.move(0, 0, -0.5);
       } else if (event.keyCode == 65) {
         this.setState({ leftPressed: true });
-        this.move(0, 0.5);
+        this.move(0, 0, 0.5);
       }
-      if (event.keyCode == 83) {
+      else if (event.keyCode == 83) {
         this.setState({ downPressed: true });
-        this.move(-0.15, 0);
+        this.move(-0.15, 0, 0);
       } else if (event.keyCode == 87) {
         this.setState({ upPressed: true });
-        this.move(0.15, 0);
+        this.move(0.15, 0, 0);
       }
     }
   }
@@ -205,19 +215,27 @@ class App extends Component {
 keyUpHandler = (event) => {
   this.setState({ keyFired: false });
   console.log(`key up${event.key}`);
-  if (event.keyCode == 68) {
+  if (event.keyCode == 82) {
+    this.setState({ retractPressed: false });
+    this.move(0, 0, 0);
+  }
+  else if (event.keyCode == 70) { //  f key
+    this.setState({ extendPressed: false });
+    this.move(0, 0, 0);
+  }
+  else if (event.keyCode == 68) {
     this.setState({ rightPressed: false });
-    this.move(0, 0);
+    this.move(0, 0, 0);
   } else if (event.keyCode == 65) {
     this.setState({ leftPressed: false });
-    this.move(0, 0);
+    this.move(0, 0, 0);
   }
   if (event.keyCode == 83) {
     this.setState({ downPressed: false });
-    this.move(0, 0);
+    this.move(0, 0, 0);
   } else if (event.keyCode == 87) {
     this.setState({ upPressed: false });
-    this.move(0, 0);
+    this.move(0, 0, 0);
   }
 }
 
@@ -251,8 +269,7 @@ keyUpHandler = (event) => {
   stopList = () => {
     this.state.listener.unsubscribe();
   }
-
-  move = (linearx, rotatez) => {
+  move = (linearx, rotatey, rotatez) => {
     console.log('tool');
     // Create the velocity command
     const cmdVel = new ROSLIB.Topic({
@@ -272,7 +289,7 @@ keyUpHandler = (event) => {
       angular:
       {
         x: 0.0,
-        y: 0.0,
+        y: rotatey,
         z: rotatez,
       },
     });
