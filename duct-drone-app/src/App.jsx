@@ -92,14 +92,9 @@ class App extends Component {
         const newIDList = {};
         idList.forEach((obj) => {
           const id = obj._id;
-          delete obj._id;
           newIDList[id] = obj;
         });
-
         this.setState({ serialTableData: newIDList });
-        console.log('update serial table data:');
-        console.log(this.state.serialTableData);
-        // console.log(this.state.serialTableData["5db9e38c0b68edb3afd23dc7"])
       });
   }
 
@@ -143,7 +138,7 @@ class App extends Component {
             if (response.ok) {
               this.setState({ serverConnected: true });
               this.getData();
-              if (this.state.sessionID != '' && this.state.serialTableData[this.state.sessionID] != null) { this.setState({ showSessionTable: true }) ;}
+              if (this.state.sessionID != '' && this.state.serialTableData[this.state.sessionID] != null) { this.setState({ showSessionTable: true }); }
             }
           });
       },
