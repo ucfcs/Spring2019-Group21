@@ -22,6 +22,7 @@ class App extends Component {
 
     this.state = {
       leakAlertVal: 0,
+      showSessionTable: false,
       keyFired: false,
       currentTemp: '0',
       currentHumidity: '0',
@@ -50,6 +51,7 @@ class App extends Component {
         y: 0.0,
         z: 0.0,
       },
+      serialTableData: {},
     };
   }
 
@@ -72,7 +74,7 @@ class App extends Component {
 
   decrementThreshold = () => {
     const { threshold } = this.state;
-    if (threshold > 0) {this.setState({threshold: this.state.threshold-1}, () => this.updateROSThreshold())};
+    if (threshold > 0) { this.setState({ threshold: this.state.threshold - 1 }, () => this.updateROSThreshold()); }
   }
 
 
@@ -85,6 +87,19 @@ class App extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({ logData: data });
+        let idList = {};
+        idList = Object.keys(data).map(key => data[key]);
+        const newIDList = {};
+        idList.forEach((obj) => {
+          const id = obj._id;
+          delete obj._id;
+          newIDList[id] = obj;
+        });
+
+        this.setState({ serialTableData: newIDList });
+        console.log('update serial table data:');
+        console.log(this.state.serialTableData);
+        // console.log(this.state.serialTableData["5db9e38c0b68edb3afd23dc7"])
       });
   }
 
@@ -128,6 +143,7 @@ class App extends Component {
             if (response.ok) {
               this.setState({ serverConnected: true });
               this.getData();
+              if (this.state.sessionID != '' && this.state.serialTableData[this.state.sessionID] != null) { this.setState({ showSessionTable: true }) ;}
             }
           });
       },
@@ -261,6 +277,7 @@ keyUpHandler = (event) => {
   endSession = () => {
     this.setState({ sessionName: '' });
     this.setState({ sessionID: '' });
+    this.setState({ showSessionTable: false });
   }
 
   closeModal = () => {
@@ -317,11 +334,12 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      ros, logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
+      logData, currentTemp, currentHumidity, sessionID, rosConnected, sessionName, serverIP,
+      serialTableData,
     } = this.state;
     const {
- threshold, manageModalOpen, sessionModalOpen, leakAlertVal 
-} = this.state;
+      threshold, manageModalOpen, sessionModalOpen, leakAlertVal,
+    } = this.state;
     return (
       <div className="background">
         <Router>
@@ -400,9 +418,8 @@ keyUpHandler = (event) => {
                     </Col>
                     <Col />
                   </Row>
+                  {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
 
-
-                  <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
               <Col>
