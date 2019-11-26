@@ -16,5 +16,6 @@ function DataTable(props) {
       showPageSizeOptions={false}
     />
   );
+  
 }
 export default DataTable;

@@ -13,6 +13,7 @@ import ManageModal from './components/ManageModal';
 import SessionTable from './components/SessionTable';
 import './components/styles/App.css';
 
+
 const ROSLIB = require('roslib');
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
 
     this.state = {
       leakAlertVal: 0,
+      showSessionTable: false,
       keyFired: false,
       currentTemp: '0',
       currentHumidity: '0',
@@ -49,6 +51,7 @@ class App extends Component {
         y: 0.0,
         z: 0.0,
       },
+      serialTableData: {},
     };
   }
 
@@ -56,6 +59,7 @@ class App extends Component {
     // if(this.state.rosConnected) {
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
+
     // }
   }
 
@@ -65,12 +69,12 @@ class App extends Component {
   }
 
   incrementThreshold = () => {
-    this.setState({threshold: this.state.threshold+1}, () => this.updateROSThreshold())
+    this.setState({ threshold: this.state.threshold + 1 }, () => this.updateROSThreshold());
   }
+
   decrementThreshold = () => {
-    let {threshold} = this.state;
-    if(threshold > 0)
-      this.setState({threshold: this.state.threshold-1}, () => this.updateROSThreshold())
+    const { threshold } = this.state;
+    if (threshold > 0) { this.setState({ threshold: this.state.threshold - 1 }, () => this.updateROSThreshold()); }
   }
 
 
@@ -83,6 +87,14 @@ class App extends Component {
       .then(response => response.json())
       .then((data) => {
         this.setState({ logData: data });
+        let idList = {};
+        idList = Object.keys(data).map(key => data[key]);
+        const newIDList = {};
+        idList.forEach((obj) => {
+          const id = obj._id;
+          newIDList[id] = obj;
+        });
+        this.setState({ serialTableData: newIDList });
       });
   }
 
@@ -104,9 +116,7 @@ class App extends Component {
   }
 
   connectServer = () => {
-    const regex = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$';
     this.setState({ serverConnected: false });
-    this.setState({ logData: [] });
     fetch(`http://${this.state.serverIP}/api/get/maps`,
       {
         method: 'GET',
@@ -117,6 +127,24 @@ class App extends Component {
           this.getData();
         }
       });
+    this.timerID = setInterval(
+
+      () => {
+        fetch(`http://${this.state.serverIP}/api/get/maps`,
+          {
+            method: 'GET',
+          })
+          .then((response) => {
+            if (response.ok) {
+              this.setState({ serverConnected: true });
+              this.getData();
+              if (this.state.sessionID != '' && this.state.serialTableData[this.state.sessionID] != null) { this.setState({ showSessionTable: true }); }
+            }
+          });
+      },
+      3000
+    );
+    const regex = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$';
   }
 
   connectROS = () => {
@@ -140,10 +168,9 @@ class App extends Component {
     });
 
     // IRListener.subscribe(message => console.log(message));
-    leakListener.subscribe(message =>
-      {
-        this.setState({leakAlertVal: message.data});
-      });
+    leakListener.subscribe((message) => {
+      this.setState({ leakAlertVal: message.data });
+    });
     HumidityListener.subscribe((message) => {
       console.log(message);
       this.setState({ currentTemp: Math.round(message.data[0] * 10) / 10 });
@@ -190,19 +217,16 @@ class App extends Component {
       if (event.keyCode == 82) { //  r key
         this.setState({ retractPressed: true });
         this.move(0, -1, 0);
-      }
-      else if (event.keyCode == 70) { // f key
-        this.setState({ extendPressed: true }); 
+      } else if (event.keyCode == 70) { // f key
+        this.setState({ extendPressed: true });
         this.move(0, 1, 0);
-      }
-      else if (event.keyCode == 68) {
+      } else if (event.keyCode == 68) {
         this.setState({ rightPressed: true });
         this.move(0, 0, -0.5);
       } else if (event.keyCode == 65) {
         this.setState({ leftPressed: true });
         this.move(0, 0, 0.5);
-      }
-      else if (event.keyCode == 83) {
+      } else if (event.keyCode == 83) {
         this.setState({ downPressed: true });
         this.move(-0.15, 0, 0);
       } else if (event.keyCode == 87) {
@@ -218,12 +242,10 @@ keyUpHandler = (event) => {
   if (event.keyCode == 82) {
     this.setState({ retractPressed: false });
     this.move(0, 0, 0);
-  }
-  else if (event.keyCode == 70) { //  f key
+  } else if (event.keyCode == 70) { //  f key
     this.setState({ extendPressed: false });
     this.move(0, 0, 0);
-  }
-  else if (event.keyCode == 68) {
+  } else if (event.keyCode == 68) {
     this.setState({ rightPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 65) {
@@ -250,6 +272,7 @@ keyUpHandler = (event) => {
   endSession = () => {
     this.setState({ sessionName: '' });
     this.setState({ sessionID: '' });
+    this.setState({ showSessionTable: false });
   }
 
   closeModal = () => {
@@ -269,6 +292,7 @@ keyUpHandler = (event) => {
   stopList = () => {
     this.state.listener.unsubscribe();
   }
+
   move = (linearx, rotatey, rotatez) => {
     console.log('tool');
     // Create the velocity command
@@ -305,9 +329,12 @@ keyUpHandler = (event) => {
       return s;
     };
     const {
-      ros, logData, currentTemp, currentHumidity, currentAirVelocity, sessionID, serverConnected, rosConnected, sessionName, serverIP,
+      logData, currentTemp, currentHumidity, sessionID, rosConnected, sessionName, serverIP,
+      serialTableData,
     } = this.state;
-    const { threshold, manageModalOpen, sessionModalOpen, leakAlertVal } = this.state;
+    const {
+      threshold, manageModalOpen, sessionModalOpen, leakAlertVal,
+    } = this.state;
     return (
       <div className="background">
         <Router>
@@ -386,13 +413,12 @@ keyUpHandler = (event) => {
                     </Col>
                     <Col />
                   </Row>
+                  {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
 
-
-                  <SessionTable data={logData.length ? logData[0].sensorData : []} />
                 </Container>
               </Col>
               <Col>
-                <LiveBar threshold={threshold} incrementThreshold={this.incrementThreshold} decrementThreshold={this.decrementThreshold} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal}/>
+                <LiveBar threshold={threshold} incrementThreshold={this.incrementThreshold} decrementThreshold={this.decrementThreshold} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal} />
               </Col>
             </Row>
           </Container>

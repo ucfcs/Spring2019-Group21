@@ -24,7 +24,7 @@ class ManageModal extends Component {
   deleteSession = () => {
     const { getData, serverIP } = this.props;
     const { activeSession } = this.state;
-    fetch(`http://` + serverIP + `/api/remove/${activeSession._id}`, {
+    fetch(`http://${serverIP}/api/remove/${activeSession._id}`, {
       method: 'DELETE',
     });
     getData();
@@ -33,7 +33,7 @@ class ManageModal extends Component {
 
   deleteAll = () => {
     const { getData } = this.props;
-    fetch('http://' + serverIP + '/api/removeall', {
+    fetch(`http://${serverIP}/api/removeall`, {
       method: 'DELETE',
     });
     getData();
@@ -61,7 +61,7 @@ class ManageModal extends Component {
               <Col xs={1}>
                 <Button variant="outline-danger" onClick={this.deleteSession}>&#128465;</Button>
                 <Button variant="danger" onClick={this.deleteAll}>Delete All</Button>
-                {activeSession.map_link!='' ? <a href={activeSession.map_link}>Map Download Link</a>: null}
+                {activeSession.map_link != '' ? <a href={activeSession.map_link}>Map Download Link</a> : null}
               </Col>
               <Col>
                 <SessionTable data={activeSession ? activeSession.sensorData : []} />
