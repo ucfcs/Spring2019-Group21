@@ -10,7 +10,7 @@ class Sidebar extends Component {
     const { endSession, sessionName, openSessionModal, openManageModal, connectServer, connectROS, serverConnected, rosConnected, updateServerIP, updateROSIP } = this.props;
     return (
       <Container>
-        <Row style={{ height: '30%' }} />
+        <Row style={{ height: '30%' }}/>
         <Row>
           <InputGroup className="mb-3">
             <FormControl
