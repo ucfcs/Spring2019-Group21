@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Alert } from 'react-bootstrap';
+import { Row, Col, Alert, Button } from 'react-bootstrap';
 import Clock from 'react-live-clock';
 import './styles/LiveBar.css';
 import ChangeThreshold from './ChangeThreshold';
@@ -19,7 +19,10 @@ class LiveBar extends React.Component{
   const { currentTemp, currentHumidity, leakAlertVal, threshold, incrementThreshold, decrementThreshold } = this.props;
   return (
     <>
-    <Row style={{ height: '10% '}}/>
+    <Row style={{ height: '6% '}}/>
+    <Row style={{ height: '9%'}}>
+        <Alert variant={'warning'} show={leakAlertVal!=0}>Warning! There are {leakAlertVal}/64 pixels currently above threshold!</Alert>
+    </Row>
     <Row>
       <Col>
       <h1>
@@ -38,12 +41,17 @@ class LiveBar extends React.Component{
         {currentHumidity}%
       </div>
     </Row>
-    <Row>
+    <Row style={{ height: '5%'}}>
       <ChangeThreshold threshold={threshold} decrementThreshold={decrementThreshold} incrementThreshold={incrementThreshold}/>
     </Row>
+    <Row style={{height: '15%'}}/>
     <Row>
-        <Alert variant={'warning'} show={leakAlertVal!=0}>Warning! There are {leakAlertVal}/64 pixels currently above threshold!</Alert>
+    <Button variant="info" href="https://docs.google.com/document/d/11errNr8UtBq0_NY9xp3lLwKfAiXiufe8YfU8_tcegPU/edit?usp=sharing" target="_blank">Operating Manual</Button>
     </Row>
+    
+
+    
+    
 
 
   </>
