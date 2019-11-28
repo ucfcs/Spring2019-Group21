@@ -394,10 +394,8 @@ keyUpHandler = (event) => {
                           {sessionName !== '' ? sessionName : 'Inactive'}
                         </Button>
                       </Col>
-
                     </Row>
                   </ButtonToolbar>
-
                 </Container>
                 <Container fluid={true}>
                   <Row>
