@@ -36,8 +36,8 @@ class App extends Component {
       listener: '',
       // IR_DATA
       IRListener: '',
-      ROSIP: '',
-      serverIP: 'localhost:5000',
+      ROSIP: '192.168.137.2',
+      serverIP: '34.192.197.226:5000',
       serverConnected: false,
       rightPressed: false,
       leftPressed: false,
@@ -59,7 +59,8 @@ class App extends Component {
     // if(this.state.rosConnected) {
     document.addEventListener('keydown', this.keyDownHandler, false);
     document.addEventListener('keyup', this.keyUpHandler, false);
-
+    this.connectServer();
+    this.connectROS();
     // }
   }
 
@@ -142,16 +143,15 @@ class App extends Component {
             }
           });
       },
-      3000
+      5000
     );
-    const regex = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$';
   }
 
   connectROS = () => {
-    // let regex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):[0-9]+$";
-    // if(!this.state.ROSIP.match(regex))
-    //   console.log("please enter a valid ROS IP");
-    // else {
+    if(!(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.state.ROSIP))) 
+      console.log("please enter a valid ROS IP");
+    else {
+      console.log(this.state.ROSIP);
     const rosSession = new ROSLIB.Ros({
       url: `ws://${this.state.ROSIP}:9090`,
     });
@@ -167,7 +167,6 @@ class App extends Component {
       messageType: 'std_msgs/Int32',
     });
 
-    // IRListener.subscribe(message => console.log(message));
     leakListener.subscribe((message) => {
       this.setState({ leakAlertVal: message.data });
     });
@@ -190,6 +189,7 @@ class App extends Component {
           body: JSON.stringify(data),
         }).then(() => console.log('updated sensor record'));
     });
+  }
   }
 
   updateROSThreshold = () => {
