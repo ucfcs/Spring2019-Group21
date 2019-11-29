@@ -61,7 +61,7 @@ class ManageModal extends Component {
               <Col xs={1}>
                 <Button variant="outline-danger" onClick={this.deleteSession}>&#128465;</Button>
                 <Button variant="danger" onClick={this.deleteAll}>Delete All</Button>
-                {activeSession.map_link != '' ? <a href={activeSession.map_link}>Map Download Link</a> : null}
+                {activeSession.map_link != '' ? <a href={activeSession.map_link} target="_blank">Map Download Link</a> : null}
               </Col>
               <Col>
                 <SessionTable data={activeSession ? activeSession.sensorData : []} />
