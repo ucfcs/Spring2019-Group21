@@ -30,10 +30,10 @@ class LiveBar extends React.Component{
       </h1>
       </Col>
     </Row>
-    <Row style={{ height: '10% '}}/>
+    <Row style={{ height: '5% '}}/>
     <Row>
         <div className="circleBase type1">
-          {currentTemp}C°
+          {currentTemp}°C
         </div>
     </Row>
     <Row>
@@ -41,6 +41,7 @@ class LiveBar extends React.Component{
         {currentHumidity}%
       </div>
     </Row>
+    <Row style={{ height: '5% '}}/>
     <Row style={{ height: '5%'}}>
       <ChangeThreshold threshold={threshold} decrementThreshold={decrementThreshold} incrementThreshold={incrementThreshold}/>
     </Row>

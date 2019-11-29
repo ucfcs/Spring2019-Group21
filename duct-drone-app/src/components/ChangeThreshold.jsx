@@ -7,7 +7,10 @@ function ChangeThreshold(props) {
   return (
     <div>
       <h3>Leak Detection Sensitivity:</h3>
-      <h2>{threshold}</h2>
+      <h2>
+        {threshold}
+°C
+      </h2>
       <Button variant="primary" onClick={incrementThreshold}>+</Button>
       <Button variant="primary" onClick={decrementThreshold}>-</Button>
     </div>
