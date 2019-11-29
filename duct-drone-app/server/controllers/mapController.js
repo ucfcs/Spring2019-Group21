@@ -101,5 +101,21 @@ exports.addSensorData = function(req, res, next) {
       });
     }
   );
+}
 
+exports.addMapLink = function(req, res, next) {
+  Map.findOne({_id: req.params.id}).then(function(map,err) {
+    map.map_link = req.body.map_link;
+      console.log(req.body.map_link);
+      map.save();
+      if(err) {
+        return res.json({
+          error: err,
+        });
+      }
+      res.json({
+        message: `Successfully updated ${req.params.id}'s map link to ${req.body.map_link}`
+      });
+    }
+  );
 }
