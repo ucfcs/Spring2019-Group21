@@ -25,18 +25,12 @@ class Sidebar extends Component {
           </InputGroup>
         </Row>
         <Row>
-          <InputGroup className="mb-3">
-            <FormControl
-              placeholder="Server IP"
-              aria-label="Server IP"
-              aria-describedby="basic-addon2"
-              onChange={updateServerIP}
-            />
-            <InputGroup.Append>
-              <Button variant={serverConnected ? "success" : "outline-secondary"} onClick={connectServer}>Connect</Button>
-            </InputGroup.Append>
-          </InputGroup>      
+              { (serverConnected)?
+                <Button variant={"success"} onClick={connectServer} size="lg" block={true} disabled>Server Connected</Button>
+              :
+              <Button variant={"danger"} onClick={connectServer} size="lg" block={true}>Server Disconnected</Button>}
         </Row>
+        <Row style={{ height: '2%' }} />
         <Row>
           <Button
             size="lg"
@@ -47,9 +41,6 @@ class Sidebar extends Component {
           </Button>
         </Row>
         <Row style={{ height: '2%' }} />
-        {/* <Row>
-          <Button size="lg" variant="outline-primary" block={true}>Autonomous</Button>
-        </Row> */}
         <Row style={{ height: '30%' }} />
         <Row>
           <Button size="lg" variant="outline-info" block={true} onClick={openManageModal}>Manage Sessions</Button>
