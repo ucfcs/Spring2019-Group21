@@ -180,7 +180,7 @@ class App extends Component {
         humidity: this.state.currentHumidity,
       };
       console.log('REACH FETCHING');
-      fetch(`http://${this.state.serverIP}/api/update/map/${sessionID}`,
+      fetch(`http://${this.state.serverIP}/api/update/map/${sessionID}/sensordata`,
         {
           method: 'PUT',
           headers: {
@@ -273,6 +273,7 @@ keyUpHandler = (event) => {
     this.setState({ sessionName: '' });
     this.setState({ sessionID: '' });
     this.setState({ showSessionTable: false });
+    this.sendROSStopMsg();
   }
 
   closeModal = () => {
@@ -321,7 +322,32 @@ keyUpHandler = (event) => {
     // Publishing the twist message
     cmdVel.publish(twist);
   }
-
+  sendROSStartMsg = () => {
+    let cmdSession = new ROSLIB.Topic({
+      ros: this.state.ros,
+      name: '/session',
+      messageType: 'std_msgs/String',
+    });
+      //Start a new session
+      let sessionMsg = new ROSLIB.Message({
+        data: "start"
+      });
+      cmdSession.publish(sessionMsg);
+      console.log(sessionMsg);
+  }
+  sendROSStopMsg = () => {
+    let cmdSession = new ROSLIB.Topic({
+      ros: this.state.ros,
+      name: '/session',
+      messageType: 'std_msgs/String',
+    });
+      let sessionMsg = new ROSLIB.Message({
+        data: this.state.sessionID
+      });
+      cmdSession.publish(sessionMsg);
+      console.log(sessionMsg);
+      console.log("Tried to end session but sessionID is null");
+  }
   render() {
     Number.prototype.pad = function (size) {
       let s = String(this);
@@ -341,6 +367,7 @@ keyUpHandler = (event) => {
           <Container fluid={true} style={{ height: '100%' }}>
             <ManageModal manageModalOpen={manageModalOpen} serverIP={this.state.serverIP} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
             <SessionModal
+              sendROSStartMsg={this.sendROSStartMsg}
               sessionModalOpen={sessionModalOpen}
               closeModal={this.closeModal}
               updateSessionName={this.updateSessionName}

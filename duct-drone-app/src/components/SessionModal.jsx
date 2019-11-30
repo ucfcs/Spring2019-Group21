@@ -11,9 +11,9 @@ class SessionModal extends Component {
         };
         
     }
-    
+
     startSession = () => {
-        const { updateSessionName, updateSessionID, serverIP, closeModal } = this.props;
+        const {sendROSStartMsg, updateSessionName, updateSessionID, serverIP, closeModal } = this.props;
         updateSessionName(this.state.sessionName);
         const data = {
             name: this.state.sessionName,
@@ -32,6 +32,7 @@ class SessionModal extends Component {
         .then((data) => {
           updateSessionID(data.id);
           console.log("Create map with ID: " + data.id);
+          sendROSStartMsg();
           closeModal();
         });
         
