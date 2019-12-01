@@ -65,8 +65,6 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.keyDownHandler, false);
-    document.addEventListener('keyup', this.keyUpHandler, false);
   }
 
   incrementThreshold = () => {
@@ -262,11 +260,16 @@ keyUpHandler = (event) => {
 }
 
   openManageModal = () => {
+    document.removeEventListener('keydown', this.keyDownHandler, false);
+    document.removeEventListener('keyup', this.keyUpHandler, false);
     this.setState({ manageModalOpen: true });
   }
 
   openSessionModal = () => {
+    document.removeEventListener('keydown', this.keyDownHandler, false);
+    document.removeEventListener('keyup', this.keyUpHandler, false);
     this.setState({ sessionModalOpen: true });
+    
   }
 
   endSession = () => {
@@ -277,6 +280,8 @@ keyUpHandler = (event) => {
   }
 
   closeModal = () => {
+    document.addEventListener('keydown', this.keyDownHandler, false);
+    document.addEventListener('keyup', this.keyUpHandler, false);
     this.setState({ manageModalOpen: false });
     this.setState({ sessionModalOpen: false });
   }
