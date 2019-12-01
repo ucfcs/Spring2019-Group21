@@ -10,7 +10,7 @@ class Sidebar extends Component {
     const { endSession, sessionName, openSessionModal, openManageModal, connectServer, connectROS, serverConnected, rosConnected, updateServerIP, updateROSIP } = this.props;
     return (
       <Container>
-        <Row style={{ height: '30%' }}/>
+        <Row style={{ height: '8%' }}/>
         <Row>
           <InputGroup className="mb-3">
             <FormControl
@@ -30,7 +30,7 @@ class Sidebar extends Component {
               :
               <Button variant={"danger"} onClick={connectServer} size="lg" block={true}>Server Disconnected</Button>}
         </Row>
-        <Row style={{ height: '2%' }} />
+        <Row style={{ height: '20%' }}/>
         <Row>
           <Button
             size="lg"
@@ -40,11 +40,11 @@ class Sidebar extends Component {
              { (sessionName == '') ? <>Start Session</> :  <>End Session</> }
           </Button>
         </Row>
-        <Row style={{ height: '2%' }} />
-        <Row style={{ height: '30%' }} />
+        <Row style={{ height: '2%' }}/>
         <Row>
           <Button size="lg" variant="outline-info" block={true} onClick={openManageModal}>Manage Sessions</Button>
         </Row>
+
       </Container>
 
     );

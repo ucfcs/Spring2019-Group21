@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Container from 'react-bootstrap/Container';
 import {
-  Button, ButtonToolbar, Row, Col, Form,
+  Button, ButtonToolbar, Row, Col, Image,
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -36,7 +36,7 @@ class App extends Component {
       listener: '',
       // IR_DATA
       IRListener: '',
-      ROSIP: '192.168.137.2',
+      ROSIP: '10.171.204.183',
       serverIP: '34.192.197.226:5000',
       serverConnected: false,
       rightPressed: false,
@@ -75,7 +75,6 @@ class App extends Component {
     const { threshold } = this.state;
     if (threshold > 0) { this.setState({ threshold: this.state.threshold - 1 }, () => this.updateROSThreshold()); }
   }
-
 
   getData = () => {
     console.log('get');
@@ -146,11 +145,9 @@ class App extends Component {
   }
 
   connectROS = () => {
-    if(!(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.state.ROSIP))) 
-      console.log("please enter a valid ROS IP");
-    else {
-      console.log(this.state.ROSIP);
-    const rosSession = new ROSLIB.Ros({
+    console.log(this.state.ROSIP);
+    let rosSession = {};
+    rosSession = new ROSLIB.Ros({
       url: `ws://${this.state.ROSIP}:9090`,
     });
     this.setState({ ros: rosSession });
@@ -187,7 +184,6 @@ class App extends Component {
           body: JSON.stringify(data),
         }).then(() => console.log('updated sensor record'));
     });
-  }
   }
 
   updateROSThreshold = () => {
@@ -269,7 +265,6 @@ keyUpHandler = (event) => {
     document.removeEventListener('keydown', this.keyDownHandler, false);
     document.removeEventListener('keyup', this.keyUpHandler, false);
     this.setState({ sessionModalOpen: true });
-    
   }
 
   endSession = () => {
@@ -327,32 +322,35 @@ keyUpHandler = (event) => {
     // Publishing the twist message
     cmdVel.publish(twist);
   }
+
   sendROSStartMsg = () => {
-    let cmdSession = new ROSLIB.Topic({
+    const cmdSession = new ROSLIB.Topic({
       ros: this.state.ros,
       name: '/session',
       messageType: 'std_msgs/String',
     });
-      //Start a new session
-      let sessionMsg = new ROSLIB.Message({
-        data: "start"
-      });
-      cmdSession.publish(sessionMsg);
-      console.log(sessionMsg);
+      // Start a new session
+    const sessionMsg = new ROSLIB.Message({
+      data: 'start',
+    });
+    cmdSession.publish(sessionMsg);
+    console.log(sessionMsg);
   }
+
   sendROSStopMsg = () => {
-    let cmdSession = new ROSLIB.Topic({
+    const cmdSession = new ROSLIB.Topic({
       ros: this.state.ros,
       name: '/session',
       messageType: 'std_msgs/String',
     });
-      let sessionMsg = new ROSLIB.Message({
-        data: this.state.sessionID
-      });
-      cmdSession.publish(sessionMsg);
-      console.log(sessionMsg);
-      console.log("Tried to end session but sessionID is null");
+    const sessionMsg = new ROSLIB.Message({
+      data: this.state.sessionID,
+    });
+    cmdSession.publish(sessionMsg);
+    console.log(sessionMsg);
+    console.log('Tried to end session but sessionID is null');
   }
+
   render() {
     Number.prototype.pad = function (size) {
       let s = String(this);
@@ -367,7 +365,7 @@ keyUpHandler = (event) => {
       threshold, manageModalOpen, sessionModalOpen, leakAlertVal,
     } = this.state;
     return (
-      <div className="background">
+      <div>
         <Router>
           <Container fluid={true} style={{ height: '100%' }}>
             <ManageModal manageModalOpen={manageModalOpen} serverIP={this.state.serverIP} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
@@ -400,13 +398,6 @@ keyUpHandler = (event) => {
                   <ButtonToolbar>
                     <Row style={{ width: '100%' }}>
                       <Col>
-                        <Button variant={rosConnected ? 'success' : 'warning'}>
-                            Drone Status:
-                          {' '}
-                          {rosConnected ? 'Connected' : 'Disconnected'}
-                        </Button>
-                      </Col>
-                      <Col>
                         <Button
                           variant={sessionID ? 'success' : 'warning'}
                           className="btn-display"
@@ -429,23 +420,38 @@ keyUpHandler = (event) => {
                     </Row>
                   </ButtonToolbar>
                 </Container>
-                <Container fluid={true}>
-                  <Row>
+                <Row>
                     <Col />
-                    <Col>
-                      <div>
-                        <img
-                          src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
-                          onError={(e) => { e.target.addEventListener('error', null); e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1'; }}
-                          alt="Drone is disconnected or Camera is Malfunctioning"
-                        />
-                      </div>
-                    </Col>
+                    <Col xs={10}>
+                    <Container fluid={true}>
+                      <Image
+                      style={
+                          {
+                            minWidth: '70%',
+                            display: 'block',
+                            marginLeft: 'auto',
+                            marginRight: 'auto' 
+}
+                        }
+                      fluid={true}
+                      src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
+                      onError={(e) => {
+                            e.target.addEventListener('error', null);
+                            e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1';
+                          }}
+                      alt="Drone is disconnected or Camera is Malfunctioning"
+                    />
+                    </Container>
+
+                  </Col>
                     <Col />
                   </Row>
-                  {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
+                <Row>
+                    <Col xs={10}>
+                    {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
+                  </Col>
+                  </Row>
 
-                </Container>
               </Col>
               <Col>
                 <LiveBar threshold={threshold} incrementThreshold={this.incrementThreshold} decrementThreshold={this.decrementThreshold} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal} />

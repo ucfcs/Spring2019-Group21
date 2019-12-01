@@ -32,7 +32,7 @@ class ManageModal extends Component {
   }
 
   deleteAll = () => {
-    const { getData } = this.props;
+    const { serverIP, getData } = this.props;
     fetch(`http://${serverIP}/api/removeall`, {
       method: 'DELETE',
     });
