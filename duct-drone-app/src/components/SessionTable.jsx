@@ -11,12 +11,15 @@ function SessionTable(props) {
         return (
           <div>
             <span>
-              {date.getMonth()}/
-              {date.getDate()}/
+              {date.getMonth()}
+/
+              {date.getDate()}
+/
               {date.getFullYear()}
               &nbsp;&nbsp;&nbsp;&nbsp;
-              {date.getUTCHours()}:
-              {date.getUTCMinutes()}              
+              {date.getUTCHours()}
+:
+              {date.getUTCMinutes()}
             </span>
 
           </div>

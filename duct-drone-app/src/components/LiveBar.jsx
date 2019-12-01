@@ -47,7 +47,6 @@ class LiveBar extends React.Component{
     </Row>
     <Row style={{height: '15%'}}/>
     <Row>
-    <Button variant="info" href="https://docs.google.com/document/d/11errNr8UtBq0_NY9xp3lLwKfAiXiufe8YfU8_tcegPU/edit?usp=sharing" target="_blank">Operating Manual</Button>
     </Row>
     
 

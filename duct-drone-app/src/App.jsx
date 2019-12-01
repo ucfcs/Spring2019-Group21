@@ -34,23 +34,10 @@ class App extends Component {
       rosConnected: false,
       ros: '',
       listener: '',
-      // IR_DATA
-      IRListener: '',
       ROSIP: '10.171.204.183',
       serverIP: '34.192.197.226:5000',
       serverConnected: false,
-      rightPressed: false,
-      leftPressed: false,
-      upPressed: false,
-      downPressed: false,
-      extendPressed: false,
-      retractPressed: false,
       threshold: 0,
-      linear: {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-      },
       serialTableData: {},
     };
   }
@@ -77,7 +64,6 @@ class App extends Component {
   }
 
   getData = () => {
-    console.log('get');
     fetch(`http://${this.state.serverIP}/api/get/maps`,
       {
         method: 'GET',
@@ -97,7 +83,6 @@ class App extends Component {
   }
 
   updateServerIP = (event) => {
-    console.log(event.target.value);
     this.setState({ serverIP: event.target.value });
   }
 
@@ -145,7 +130,6 @@ class App extends Component {
   }
 
   connectROS = () => {
-    console.log(this.state.ROSIP);
     let rosSession = {};
     rosSession = new ROSLIB.Ros({
       url: `ws://${this.state.ROSIP}:9090`,
@@ -166,7 +150,6 @@ class App extends Component {
       this.setState({ leakAlertVal: message.data });
     });
     HumidityListener.subscribe((message) => {
-      console.log(message);
       this.setState({ currentTemp: Math.round(message.data[0] * 10) / 10 });
       this.setState({ currentHumidity: Math.round(message.data[1] * 10) / 10 });
       const { sessionID } = this.state;
@@ -174,7 +157,6 @@ class App extends Component {
         temperature: this.state.currentTemp,
         humidity: this.state.currentHumidity,
       };
-      console.log('REACH FETCHING');
       fetch(`http://${this.state.serverIP}/api/update/map/${sessionID}/sensordata`,
         {
           method: 'PUT',
@@ -182,7 +164,7 @@ class App extends Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(data),
-        }).then(() => console.log('updated sensor record'));
+        });
     });
   }
 
@@ -198,7 +180,6 @@ class App extends Component {
     const thresholdMsg = new ROSLIB.Message({
       data: this.state.threshold,
     });
-    console.log(thresholdMsg);
     // Publishing the twist message
     cmdThreshold.publish(thresholdMsg);
   }
@@ -206,25 +187,17 @@ class App extends Component {
   keyDownHandler = (event) => {
     if (!this.state.keyFired) {
       this.setState({ keyFired: true });
-
-      console.log(`key down${event.key}`);
       if (event.keyCode == 82) { //  r key
-        this.setState({ retractPressed: true });
         this.move(0, -1, 0);
       } else if (event.keyCode == 70) { // f key
-        this.setState({ extendPressed: true });
         this.move(0, 1, 0);
       } else if (event.keyCode == 68) {
-        this.setState({ rightPressed: true });
         this.move(0, 0, -0.5);
       } else if (event.keyCode == 65) {
-        this.setState({ leftPressed: true });
         this.move(0, 0, 0.5);
       } else if (event.keyCode == 83) {
-        this.setState({ downPressed: true });
         this.move(-0.15, 0, 0);
       } else if (event.keyCode == 87) {
-        this.setState({ upPressed: true });
         this.move(0.15, 0, 0);
       }
     }
@@ -232,25 +205,18 @@ class App extends Component {
 
 keyUpHandler = (event) => {
   this.setState({ keyFired: false });
-  console.log(`key up${event.key}`);
   if (event.keyCode == 82) {
-    this.setState({ retractPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 70) { //  f key
-    this.setState({ extendPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 68) {
-    this.setState({ rightPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 65) {
-    this.setState({ leftPressed: false });
     this.move(0, 0, 0);
   }
   if (event.keyCode == 83) {
-    this.setState({ downPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 87) {
-    this.setState({ upPressed: false });
     this.move(0, 0, 0);
   }
 }
@@ -282,20 +248,7 @@ keyUpHandler = (event) => {
   }
 
 
-  startListen = () => {
-    console.log('break');
-
-    this.state.listener.subscribe((message) => {
-      console.log(message);
-    });
-  }
-
-  stopList = () => {
-    this.state.listener.unsubscribe();
-  }
-
   move = (linearx, rotatey, rotatez) => {
-    console.log('tool');
     // Create the velocity command
     const cmdVel = new ROSLIB.Topic({
       ros: this.state.ros,
@@ -318,7 +271,6 @@ keyUpHandler = (event) => {
         z: rotatez,
       },
     });
-    console.log(twist);
     // Publishing the twist message
     cmdVel.publish(twist);
   }
@@ -334,7 +286,6 @@ keyUpHandler = (event) => {
       data: 'start',
     });
     cmdSession.publish(sessionMsg);
-    console.log(sessionMsg);
   }
 
   sendROSStopMsg = () => {
@@ -347,8 +298,6 @@ keyUpHandler = (event) => {
       data: this.state.sessionID,
     });
     cmdSession.publish(sessionMsg);
-    console.log(sessionMsg);
-    console.log('Tried to end session but sessionID is null');
   }
 
   render() {
@@ -404,7 +353,7 @@ keyUpHandler = (event) => {
                           disabled={true}
                           size="lg"
                         >
-                          {sessionID != '' ? sessionID : 'Inactive'}
+                          {sessionID != '' ? sessionID : 'Session ID: Inactive'}
                         </Button>
                       </Col>
                       <Col>
@@ -414,43 +363,43 @@ keyUpHandler = (event) => {
                           disabled={true}
                           size="lg"
                         >
-                          {sessionName !== '' ? sessionName : 'Inactive'}
+                          {sessionName !== '' ? sessionName : 'Session Name: Inactive'}
                         </Button>
                       </Col>
                     </Row>
                   </ButtonToolbar>
                 </Container>
                 <Row>
-                    <Col />
-                    <Col xs={10}>
+                  <Col />
+                  <Col xs={10}>
                     <Container fluid={true}>
                       <Image
-                      style={
+                        style={
                           {
                             minWidth: '70%',
                             display: 'block',
                             marginLeft: 'auto',
-                            marginRight: 'auto' 
-}
+                            marginRight: 'auto',
+                          }
                         }
-                      fluid={true}
-                      src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
-                      onError={(e) => {
-                            e.target.addEventListener('error', null);
-                            e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1';
-                          }}
-                      alt="Drone is disconnected or Camera is Malfunctioning"
-                    />
+                        fluid={true}
+                        src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
+                        onError={(e) => {
+                          e.target.addEventListener('error', null);
+                          e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1';
+                        }}
+                        alt="Drone is disconnected or Camera is Malfunctioning"
+                      />
                     </Container>
 
                   </Col>
-                    <Col />
-                  </Row>
+                  <Col />
+                </Row>
                 <Row>
-                    <Col xs={10}>
+                  <Col xs={10}>
                     {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
                   </Col>
-                  </Row>
+                </Row>
 
               </Col>
               <Col>

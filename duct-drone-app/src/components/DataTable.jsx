@@ -14,9 +14,8 @@ function DataTable(props) {
       defaultPageSize={10}
       showPaginationBottom={true}
       showPageSizeOptions={false}
-      style={{ width: "100%" }}
+      style={{ width: '100%' }}
     />
   );
-  
 }
 export default DataTable;
