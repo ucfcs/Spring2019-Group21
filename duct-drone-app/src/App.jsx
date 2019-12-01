@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Container from 'react-bootstrap/Container';
 import {
-  Button, ButtonToolbar, Row, Col, Form,
+  Button, ButtonToolbar, Row, Col, Image,
 } from 'react-bootstrap';
 import {
   BrowserRouter as Router,
@@ -34,23 +34,10 @@ class App extends Component {
       rosConnected: false,
       ros: '',
       listener: '',
-      // IR_DATA
-      IRListener: '',
-      ROSIP: '192.168.137.2',
+      ROSIP: '10.171.204.183',
       serverIP: '34.192.197.226:5000',
       serverConnected: false,
-      rightPressed: false,
-      leftPressed: false,
-      upPressed: false,
-      downPressed: false,
-      extendPressed: false,
-      retractPressed: false,
       threshold: 0,
-      linear: {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-      },
       serialTableData: {},
     };
   }
@@ -76,9 +63,7 @@ class App extends Component {
     if (threshold > 0) { this.setState({ threshold: this.state.threshold - 1 }, () => this.updateROSThreshold()); }
   }
 
-
   getData = () => {
-    console.log('get');
     fetch(`http://${this.state.serverIP}/api/get/maps`,
       {
         method: 'GET',
@@ -98,7 +83,6 @@ class App extends Component {
   }
 
   updateServerIP = (event) => {
-    console.log(event.target.value);
     this.setState({ serverIP: event.target.value });
   }
 
@@ -146,11 +130,8 @@ class App extends Component {
   }
 
   connectROS = () => {
-    if(!(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.state.ROSIP))) 
-      console.log("please enter a valid ROS IP");
-    else {
-      console.log(this.state.ROSIP);
-    const rosSession = new ROSLIB.Ros({
+    let rosSession = {};
+    rosSession = new ROSLIB.Ros({
       url: `ws://${this.state.ROSIP}:9090`,
     });
     this.setState({ ros: rosSession });
@@ -169,7 +150,6 @@ class App extends Component {
       this.setState({ leakAlertVal: message.data });
     });
     HumidityListener.subscribe((message) => {
-      console.log(message);
       this.setState({ currentTemp: Math.round(message.data[0] * 10) / 10 });
       this.setState({ currentHumidity: Math.round(message.data[1] * 10) / 10 });
       const { sessionID } = this.state;
@@ -177,7 +157,6 @@ class App extends Component {
         temperature: this.state.currentTemp,
         humidity: this.state.currentHumidity,
       };
-      console.log('REACH FETCHING');
       fetch(`http://${this.state.serverIP}/api/update/map/${sessionID}/sensordata`,
         {
           method: 'PUT',
@@ -185,9 +164,8 @@ class App extends Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(data),
-        }).then(() => console.log('updated sensor record'));
+        });
     });
-  }
   }
 
   updateROSThreshold = () => {
@@ -202,7 +180,6 @@ class App extends Component {
     const thresholdMsg = new ROSLIB.Message({
       data: this.state.threshold,
     });
-    console.log(thresholdMsg);
     // Publishing the twist message
     cmdThreshold.publish(thresholdMsg);
   }
@@ -210,25 +187,17 @@ class App extends Component {
   keyDownHandler = (event) => {
     if (!this.state.keyFired) {
       this.setState({ keyFired: true });
-
-      console.log(`key down${event.key}`);
       if (event.keyCode == 82) { //  r key
-        this.setState({ retractPressed: true });
         this.move(0, -1, 0);
       } else if (event.keyCode == 70) { // f key
-        this.setState({ extendPressed: true });
         this.move(0, 1, 0);
       } else if (event.keyCode == 68) {
-        this.setState({ rightPressed: true });
         this.move(0, 0, -0.5);
       } else if (event.keyCode == 65) {
-        this.setState({ leftPressed: true });
         this.move(0, 0, 0.5);
       } else if (event.keyCode == 83) {
-        this.setState({ downPressed: true });
         this.move(-0.15, 0, 0);
       } else if (event.keyCode == 87) {
-        this.setState({ upPressed: true });
         this.move(0.15, 0, 0);
       }
     }
@@ -236,25 +205,18 @@ class App extends Component {
 
 keyUpHandler = (event) => {
   this.setState({ keyFired: false });
-  console.log(`key up${event.key}`);
   if (event.keyCode == 82) {
-    this.setState({ retractPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 70) { //  f key
-    this.setState({ extendPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 68) {
-    this.setState({ rightPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 65) {
-    this.setState({ leftPressed: false });
     this.move(0, 0, 0);
   }
   if (event.keyCode == 83) {
-    this.setState({ downPressed: false });
     this.move(0, 0, 0);
   } else if (event.keyCode == 87) {
-    this.setState({ upPressed: false });
     this.move(0, 0, 0);
   }
 }
@@ -269,7 +231,6 @@ keyUpHandler = (event) => {
     document.removeEventListener('keydown', this.keyDownHandler, false);
     document.removeEventListener('keyup', this.keyUpHandler, false);
     this.setState({ sessionModalOpen: true });
-    
   }
 
   endSession = () => {
@@ -287,20 +248,7 @@ keyUpHandler = (event) => {
   }
 
 
-  startListen = () => {
-    console.log('break');
-
-    this.state.listener.subscribe((message) => {
-      console.log(message);
-    });
-  }
-
-  stopList = () => {
-    this.state.listener.unsubscribe();
-  }
-
   move = (linearx, rotatey, rotatez) => {
-    console.log('tool');
     // Create the velocity command
     const cmdVel = new ROSLIB.Topic({
       ros: this.state.ros,
@@ -323,36 +271,35 @@ keyUpHandler = (event) => {
         z: rotatez,
       },
     });
-    console.log(twist);
     // Publishing the twist message
     cmdVel.publish(twist);
   }
+
   sendROSStartMsg = () => {
-    let cmdSession = new ROSLIB.Topic({
+    const cmdSession = new ROSLIB.Topic({
       ros: this.state.ros,
       name: '/session',
       messageType: 'std_msgs/String',
     });
-      //Start a new session
-      let sessionMsg = new ROSLIB.Message({
-        data: "start"
-      });
-      cmdSession.publish(sessionMsg);
-      console.log(sessionMsg);
+      // Start a new session
+    const sessionMsg = new ROSLIB.Message({
+      data: 'start',
+    });
+    cmdSession.publish(sessionMsg);
   }
+
   sendROSStopMsg = () => {
-    let cmdSession = new ROSLIB.Topic({
+    const cmdSession = new ROSLIB.Topic({
       ros: this.state.ros,
       name: '/session',
       messageType: 'std_msgs/String',
     });
-      let sessionMsg = new ROSLIB.Message({
-        data: this.state.sessionID
-      });
-      cmdSession.publish(sessionMsg);
-      console.log(sessionMsg);
-      console.log("Tried to end session but sessionID is null");
+    const sessionMsg = new ROSLIB.Message({
+      data: this.state.sessionID,
+    });
+    cmdSession.publish(sessionMsg);
   }
+
   render() {
     Number.prototype.pad = function (size) {
       let s = String(this);
@@ -367,7 +314,7 @@ keyUpHandler = (event) => {
       threshold, manageModalOpen, sessionModalOpen, leakAlertVal,
     } = this.state;
     return (
-      <div className="background">
+      <div>
         <Router>
           <Container fluid={true} style={{ height: '100%' }}>
             <ManageModal manageModalOpen={manageModalOpen} serverIP={this.state.serverIP} closeModal={this.closeModal} data={logData.length != 0 ? logData : []} getData={this.getData} />
@@ -400,20 +347,13 @@ keyUpHandler = (event) => {
                   <ButtonToolbar>
                     <Row style={{ width: '100%' }}>
                       <Col>
-                        <Button variant={rosConnected ? 'success' : 'warning'}>
-                            Drone Status:
-                          {' '}
-                          {rosConnected ? 'Connected' : 'Disconnected'}
-                        </Button>
-                      </Col>
-                      <Col>
                         <Button
                           variant={sessionID ? 'success' : 'warning'}
                           className="btn-display"
                           disabled={true}
                           size="lg"
                         >
-                          {sessionID != '' ? sessionID : 'Inactive'}
+                          {sessionID != '' ? sessionID : 'Session ID: Inactive'}
                         </Button>
                       </Col>
                       <Col>
@@ -423,29 +363,44 @@ keyUpHandler = (event) => {
                           disabled={true}
                           size="lg"
                         >
-                          {sessionName !== '' ? sessionName : 'Inactive'}
+                          {sessionName !== '' ? sessionName : 'Session Name: Inactive'}
                         </Button>
                       </Col>
                     </Row>
                   </ButtonToolbar>
                 </Container>
-                <Container fluid={true}>
-                  <Row>
-                    <Col />
-                    <Col>
-                      <div>
-                        <img
-                          src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
-                          onError={(e) => { e.target.addEventListener('error', null); e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1'; }}
-                          alt="Drone is disconnected or Camera is Malfunctioning"
-                        />
-                      </div>
-                    </Col>
-                    <Col />
-                  </Row>
-                  {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
+                <Row>
+                  <Col />
+                  <Col xs={10}>
+                    <Container fluid={true}>
+                      <Image
+                        style={
+                          {
+                            minWidth: '70%',
+                            display: 'block',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                          }
+                        }
+                        fluid={true}
+                        src={`http://${this.state.ROSIP}:8080` + '/stream?topic=/raspicam_node/image_raw&quality=100&invert=true'}
+                        onError={(e) => {
+                          e.target.addEventListener('error', null);
+                          e.target.src = 'https://www.dropbox.com/s/x8mo37abp36h9rt/disconnected.png?raw=1';
+                        }}
+                        alt="Drone is disconnected or Camera is Malfunctioning"
+                      />
+                    </Container>
 
-                </Container>
+                  </Col>
+                  <Col />
+                </Row>
+                <Row>
+                  <Col xs={10}>
+                    {this.state.showSessionTable ? <SessionTable data={(serialTableData[sessionID] != null) ? serialTableData[sessionID].sensorData : null} /> : null}
+                  </Col>
+                </Row>
+
               </Col>
               <Col>
                 <LiveBar threshold={threshold} incrementThreshold={this.incrementThreshold} decrementThreshold={this.decrementThreshold} currentTemp={currentTemp} currentHumidity={currentHumidity} leakAlertVal={leakAlertVal} />
